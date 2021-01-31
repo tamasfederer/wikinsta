@@ -1,0 +1,36 @@
+/* Generic initialization */
+:root {
+	font-size: 1rem;
+	font-family: "Trebuchet MS", Helvetica, sans-serif;
+}
+
+body {
+	margin: 0;
+	padding: 0;
+}
+
+body::-webkit-scrollbar {
+	width: 0.25rem;
+}
+
+body::-webkit-scrollbar-track {
+	background: rgb(220, 220, 220)
+}
+
+body::-webkit-scrollbar-thumb {
+	background: rgb(128, 128, 128)
+}
+
+p {
+	margin: 0;
+	color: rgb(48, 48, 48); 
+}
+
+a {
+	text-decoration: none;
+	color: rgb(24, 24, 192);;
+}
+
+a:hover {
+	color: rgb(64, 64, 192);;
+}
