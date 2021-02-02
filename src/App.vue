@@ -3,11 +3,11 @@
 		<img class="logo" alt="WikInsta" src="./assets/logo.png">
 	</div>
 	<div class="content" ref="container">
-			<p style="color: rgb(24, 24, 24); text-shadow: 0px 0px 1px black; padding-bottom: 0.5rem; padding-left: 0.5rem; padding-right: 0.5rem;">Hello there!</p>
-			<p style="padding-bottom: 0.5rem; padding-left: 0.5rem; padding-right: 0.5rem;">Did you know that in June 2018 the US Android users spent more than <a href="https://www.vox.com/2018/6/25/17501224/instagram-facebook-snapchat-time-spent-growth-data">50 minutes</a> per day on Instagram? Can you imagine what could be achieved during that time? One can learn a language or a new skill, or a bunch of information can be consumed and the general knowledge of the individual can be increased! This is extremely important, especially these days when misinformation and false news can be found everywhere!</p>
-			<p style="padding-bottom: 0.5rem; padding-left: 0.5rem; padding-right: 0.5rem;"><a href="/">Wikinsta</a> has been created to make this easier!</p>
-			<p style="padding-bottom: 0.5rem; padding-left: 0.5rem; padding-right: 0.5rem;">If you like it, please <a href="https://donate.wikimedia.org/w/index.php?title=Special:LandingPage&country=FR&uselang=en&utm_medium=wmfMedium&utm_source=LaunchPost&utm_campaign=comms">support</a> the guys at Wikimedia. Thanks!</p>
-			<p style="padding-bottom: 3rem; padding-left: 0.5rem; padding-right: 0.5rem;">Feel free to <a href="https://github.com/tamasfederer/wikinsta">contribute</a>, report an <a href="https://github.com/tamasfederer/wikinsta/issues">issue</a>!</p>
+		<p style="color: rgb(24, 24, 24); text-shadow: 0px 0px 1px black; padding-bottom: 0.5rem; padding-left: 0.5rem; padding-right: 0.5rem;">Hello there!</p>
+		<p style="padding-bottom: 0.5rem; padding-left: 0.5rem; padding-right: 0.5rem;">Did you know that in June 2018 the US Android users spent more than <a href="https://www.vox.com/2018/6/25/17501224/instagram-facebook-snapchat-time-spent-growth-data">50 minutes</a> per day on Instagram? Can you imagine what could be achieved during that time? One can learn a language or a new skill, or a bunch of information can be consumed and the general knowledge of the individual can be increased! This is extremely important, especially these days when misinformation and false news can be found everywhere!</p>
+		<p style="padding-bottom: 0.5rem; padding-left: 0.5rem; padding-right: 0.5rem;"><a href="/">Wikinsta</a> has been created to make this easier!</p>
+		<p style="padding-bottom: 0.5rem; padding-left: 0.5rem; padding-right: 0.5rem;">If you like it, please <a href="https://donate.wikimedia.org/w/index.php?title=Special:LandingPage&country=FR&uselang=en&utm_medium=wmfMedium&utm_source=LaunchPost&utm_campaign=comms">support</a> the guys at Wikimedia. Thanks!</p>
+		<p style="padding-bottom: 3rem; padding-left: 0.5rem; padding-right: 0.5rem;">Feel free to <a href="https://github.com/tamasfederer/wikinsta">contribute</a>, report an <a href="https://github.com/tamasfederer/wikinsta/issues">issue</a>!</p>
 	</div>
 </template>
 <script>
@@ -147,7 +147,11 @@ export default {
 
 						article['title'] = result['title']
 						article['extract'] = result['extract']
-						article['href'] = "http://en.wikipedia.org/?curid=" + result['pageid']
+						if (this.isMobile()) {
+							article['href'] = "http://en.m.wikipedia.org/?curid=" + result['pageid']
+						} else {
+							article['href'] = "http://en.wikipedia.org/?curid=" + result['pageid']
+						}
 
 						// Create thumbnail
 						if ((cardIsThumbnailNeeded == false) && (!('thumbnail' in result))) {
@@ -166,7 +170,11 @@ export default {
 								catTitle = result['categories'][i]['title']
 								catHashtag = "#" + catTitle.substring(9).toLowerCase().replace(/\w\S*/g, (w) => (w.replace(/^\w/, (c) => c.toUpperCase()))).replace(/\s/g, '')
 
-								article['categories'][catHashtag] = "https://en.wikipedia.org/wiki/" + catTitle
+								if (this.isMobile()) {
+									article['categories'][catHashtag] = "https://en.m.wikipedia.org/wiki/" + catTitle
+								} else {
+									article['categories'][catHashtag] = "https://en.wikipedia.org/wiki/" + catTitle
+								}
 							}
 						}
 
@@ -214,6 +222,22 @@ export default {
 				})
 			}
 		},
+
+		isMobile() {
+			const toMatch = [
+				/Android/i,
+				/webOS/i,
+				/iPhone/i,
+				/iPad/i,
+				/iPod/i,
+				/BlackBerry/i,
+				/Windows Phone/i
+			];
+
+			return toMatch.some((toMatchItem) => {
+				return navigator.userAgent.match(toMatchItem);
+			});
+		},
 	}
 }
 </script>
@@ -240,7 +264,7 @@ export default {
 .content {
 	padding-top: 75px;
 	width: 50%;
-	
+
 	margin: auto;
 
 	text-align: justify;
@@ -254,7 +278,6 @@ export default {
 
 @media only screen and (max-width: 480px) {
 	.content {
-		/*min-width: 480px;*/
 		width: 100%;
 	}
 }
@@ -265,5 +288,4 @@ export default {
 		max-width: 960px;
 	}
 }
-
 </style>
