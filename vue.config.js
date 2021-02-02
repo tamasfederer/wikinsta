@@ -1,11 +1,21 @@
 //vue.config.js
+const fs = require('fs')
+
+
 module.exports = {
-    chainWebpack: config => {
-        config
-            .plugin('html')
-            .tap(args => {
-                args[0].title = "Wikinsta";
-                return args;
-            })
-    }
+	devServer: {
+        https: {
+          key: fs.readFileSync('./certs/example.com+5-key.pem'),
+          cert: fs.readFileSync('./certs/example.com+5.pem'),
+        },
+        public: 'https://localhost:8080/'
+    },
+	chainWebpack: config => {
+		config
+			.plugin('html')
+			.tap(args => {
+				args[0].title = "Wikinsta";
+				return args;
+			})
+	}
 }

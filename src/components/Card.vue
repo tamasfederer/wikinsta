@@ -6,9 +6,12 @@
 				<a class="card-header" :href=href target="_blank">{{title}}</a>
 				<span>&nbsp;{{extract}}</span>
 			</p>
-			<ul class="card-category-list" v-for="(value, name) in categories" :key="name">
-				<li class="card-category"><a :href=value target="_blank">{{name}}&nbsp;</a></li>
+			<ul class="card-category-list">
+				<li class="card-category" v-for="(value, name) in categories" :key="name"><a :href=value target="_blank">{{name}}&nbsp;</a></li>
 			</ul>
+			<div class="card-share">
+				
+			</div>
 		</div>
 	</div>
 </template>
@@ -55,6 +58,9 @@ export default {
 .card-content {
 	padding-left: 0.5rem;
 	padding-right: 0.5rem;
+
+	z-index: 1;
+	position: relative;
 }
 
 .card-figure {
@@ -69,12 +75,24 @@ export default {
 	margin: 0;
 	padding: 0;
 	display: inline-block;
+
+	width: calc(100% - 32px);
 }
 
 .card-category {
 	float: left;
 
 	word-break: break-word;
+}
+
+.card-share {
+	background-color: red;
+	width: 32px;
+	height: 32px;
+
+	position: absolute;
+    bottom: 0;
+    right: 0;
 }
 
 @media only screen and (orientation: landscape) {

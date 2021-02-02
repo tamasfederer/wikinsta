@@ -1,13 +1,13 @@
 <template>
 	<div class="header">
-		<img class="logo" alt="WikInsta" src="./assets/logo.png">
+		<img class="logo" alt="WikInsta" src="./assets/logo.png" @click="shareWikinsta">
 	</div>
 	<div class="content" ref="container">
-		<p style="color: rgb(24, 24, 24); text-shadow: 0px 0px 1px black; padding-bottom: 0.5rem; padding-left: 0.5rem; padding-right: 0.5rem;">Hello there!</p>
-		<p style="padding-bottom: 0.5rem; padding-left: 0.5rem; padding-right: 0.5rem;">Did you know that in June 2018 the US Android users spent more than <a href="https://www.vox.com/2018/6/25/17501224/instagram-facebook-snapchat-time-spent-growth-data">50 minutes</a> per day on Instagram? Can you imagine what could be achieved during that time? One can learn a language or a new skill, or a bunch of information can be consumed and the general knowledge of the individual can be increased! This is extremely important, especially these days when misinformation and false news can be found everywhere!</p>
-		<p style="padding-bottom: 0.5rem; padding-left: 0.5rem; padding-right: 0.5rem;"><a href="/">Wikinsta</a> has been created to make this easier!</p>
-		<p style="padding-bottom: 0.5rem; padding-left: 0.5rem; padding-right: 0.5rem;">If you like it, please <a href="https://donate.wikimedia.org/w/index.php?title=Special:LandingPage&country=FR&uselang=en&utm_medium=wmfMedium&utm_source=LaunchPost&utm_campaign=comms">support</a> the guys at Wikimedia. Thanks!</p>
-		<p style="padding-bottom: 3rem; padding-left: 0.5rem; padding-right: 0.5rem;">Feel free to <a href="https://github.com/tamasfederer/wikinsta">contribute</a>, report an <a href="https://github.com/tamasfederer/wikinsta/issues">issue</a>!</p>
+		<p class="info" style="color: rgb(24, 24, 24); text-shadow: 0px 0px 1px black;">Hello there!</p>
+		<p class="info">Did you know that in June 2018 the US Android users spent more than <a href="https://www.vox.com/2018/6/25/17501224/instagram-facebook-snapchat-time-spent-growth-data">50 minutes</a> per day on Instagram? Can you imagine what could be achieved during that time? One can learn a language or a new skill, or a bunch of information can be consumed and the general knowledge of the individual can be increased! This is extremely important, especially these days when misinformation and false news can be found everywhere!</p>
+		<p class="info"><a href="/">Wikinsta</a> has been created to make this easier!</p>
+		<p class="info">If you like it, please <a href="https://donate.wikimedia.org/w/index.php?title=Special:LandingPage&country=FR&uselang=en&utm_medium=wmfMedium&utm_source=LaunchPost&utm_campaign=comms">support</a> the guys at Wikimedia. Thanks!</p>
+		<p class="info" style="padding-bottom: 2rem;">Feel free to <a href="https://github.com/tamasfederer/wikinsta">contribute</a>, report an <a href="https://github.com/tamasfederer/wikinsta/issues">issue</a>!</p>
 	</div>
 </template>
 <script>
@@ -43,6 +43,27 @@ export default {
 		})
 	},
 	methods: {
+		shareWikinsta() {
+			const shareData = {
+				title: 'WikInsta',
+				text: 'Strange marriage of the Wikipedia and Instagram',
+				url: window.location.origin,
+			}
+			if (navigator.share !== undefined) {
+				navigator.share(shareData).then(() => {
+
+				})
+			} else {
+				const el = document.createElement('textarea');
+				el.value = window.location.origin;
+				document.body.appendChild(el);
+				el.select();
+				document.execCommand('copy');
+				document.body.removeChild(el);
+
+				console.log("Copied")
+			}
+		},
 		bottomCheck() {
 			window.onscroll = () => {
 				if (this.bottomCheckEnabled === true) {
@@ -252,6 +273,8 @@ export default {
 	height: 50px;
 
 	background-color: white;
+
+	z-index: 100;
 }
 
 .logo {
@@ -268,6 +291,13 @@ export default {
 	margin: auto;
 
 	text-align: justify;
+}
+
+.info {
+	padding-left: 0.5rem;
+	padding-right: 0.5rem;
+
+	padding-bottom: 0.5rem;
 }
 
 @media only screen and (min-width: 480px) {
