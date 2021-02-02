@@ -48,9 +48,6 @@ export default {
 	color: rgb(64, 64, 192);
 }
 
-
-
-
 .card-text {
 	padding-bottom: 0.5rem;
 }
@@ -89,7 +86,7 @@ export default {
 	}
 
 	.card-content {
-		padding-right: 0rem;
+		padding-right: 0.5rem;
 	}
 }
 </style>
