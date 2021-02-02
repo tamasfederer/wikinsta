@@ -224,8 +224,8 @@ export default {
 
 	text-align: center;
 
-	height: 50px;
 	width: 100%;
+	height: 50px;
 
 	background-color: white;
 }
@@ -235,16 +235,28 @@ export default {
 	height: auto;
 
 	max-height: 50px;
-	max-width: 100%;
 }
 
 .content {
 	padding-top: 75px;
 	width: 50%;
-	min-width: 480px;
+	
 	margin: auto;
 
 	text-align: justify;
+}
+
+@media only screen and (min-width: 480px) {
+	.content {
+		width: 480px;
+	}
+}
+
+@media only screen and (max-width: 480px) {
+	.content {
+		/*min-width: 480px;*/
+		width: 100%;
+	}
 }
 
 @media only screen and (orientation: landscape) {

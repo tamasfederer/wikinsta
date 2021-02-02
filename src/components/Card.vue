@@ -53,14 +53,14 @@ export default {
 }
 
 .card-content {
-	padding-left: .5rem;
-	padding-right: .5rem;
+	padding-left: 0.5rem;
+	padding-right: 0.5rem;
 }
 
 .card-figure {
 	width: 100%;
 	height: 100%;
-	padding-bottom: .5rem;
+	padding-bottom: 0.5rem;
 }
 
 .card-category-list {
@@ -73,6 +73,8 @@ export default {
 
 .card-category {
 	float: left;
+
+	word-break: break-word;
 }
 
 @media only screen and (orientation: landscape) {
