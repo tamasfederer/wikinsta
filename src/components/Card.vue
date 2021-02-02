@@ -10,7 +10,7 @@
 				<li class="card-category" v-for="(value, name) in categories" :key="name"><a :href=value target="_blank">{{name}}&nbsp;</a></li>
 			</ul>
 			<div class="card-share">
-				
+				<img class="card-share-img" alt="WikInsta" src="@/assets/share.png">
 			</div>
 		</div>
 	</div>
@@ -52,12 +52,14 @@ export default {
 }
 
 .card-text {
-	padding-bottom: 0.5rem;
+	padding-bottom: 0.25rem;
 }
 
 .card-content {
 	padding-left: 0.5rem;
 	padding-right: 0.5rem;
+
+	width: 100%;
 
 	z-index: 1;
 	position: relative;
@@ -83,16 +85,16 @@ export default {
 	float: left;
 
 	word-break: break-word;
+	padding-bottom: 0.25rem;
 }
 
 .card-share {
-	background-color: red;
 	width: 32px;
 	height: 32px;
 
 	position: absolute;
-    bottom: 0;
-    right: 0;
+	bottom: 0;
+	right: 0.5rem;
 }
 
 @media only screen and (orientation: landscape) {
@@ -101,7 +103,7 @@ export default {
 	}
 
 	.card-figure {
-		max-width: 250px;
+		min-width: 250px;
 		width: 40%;
 	}
 
