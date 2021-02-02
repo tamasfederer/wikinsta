@@ -1,6 +1,6 @@
 <template>
 	<div class="header">
-		<img class="logo" alt="WikInsta" src="./assets/logo.png" @click="shareWikinsta">
+		<img class="logo" alt="WikInsta" src="./assets/logo.png" @click="share">
 	</div>
 	<div class="content" ref="container">
 		<p class="info" style="color: rgb(24, 24, 24); text-shadow: 0px 0px 1px black;">Hello there!</p>
@@ -15,6 +15,8 @@
 import axios from 'axios'
 import { defineComponent, createApp } from 'vue'
 import Card from './components/Card.vue'
+
+import share from './utils/share'
 
 export default {
 	name: 'App',
@@ -43,27 +45,15 @@ export default {
 		})
 	},
 	methods: {
-		shareWikinsta() {
-			const shareData = {
+		// Share content
+		share() {
+			share.shareDataByItems({
 				title: 'WikInsta',
 				text: 'Strange marriage of the Wikipedia and Instagram',
 				url: window.location.origin,
-			}
-			if (navigator.share !== undefined) {
-				navigator.share(shareData).then(() => {
-
-				})
-			} else {
-				const el = document.createElement('textarea');
-				el.value = window.location.origin;
-				document.body.appendChild(el);
-				el.select();
-				document.execCommand('copy');
-				document.body.removeChild(el);
-
-				console.log("Copied")
-			}
+			});
 		},
+
 		bottomCheck() {
 			window.onscroll = () => {
 				if (this.bottomCheckEnabled === true) {
@@ -281,7 +271,21 @@ export default {
 	width: auto;
 	height: auto;
 
-	max-height: 50px;
+	height: 50px;
+
+	transition: 0.2s;
+}
+
+.logo:hover {
+	height: 54px;
+
+	transition: 0.2s;
+	cursor: pointer;
+}
+
+.logo:active {
+	height: 52px;
+	transition: 0.1s;
 }
 
 .content {
