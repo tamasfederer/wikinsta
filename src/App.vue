@@ -1,4 +1,7 @@
 <template>
+	<transition name="fade">
+		<Notification v-if="notification">{{notification}}</Notification>
+	</transition>
 	<div class="header">
 		<img class="logo" alt="WikInsta" src="./assets/logo.png" @click="share">
 	</div>
@@ -14,12 +17,17 @@
 // Impot some external modules
 import axios from 'axios'
 import { defineComponent, createApp } from 'vue'
+
 import Card from './components/Card.vue'
+import Notification from './components/Notification.vue'
 
 import share from './utils/share'
 
 export default {
 	name: 'App',
+	components: {
+		Notification,
+	},
 	data() {
 		return {
 			ids: [],
@@ -32,6 +40,8 @@ export default {
 
 			bottomDistance: 500,
 			bottomCheckEnabled: true,
+
+			notification: null,
 		}
 	},
 	mounted() {
@@ -52,6 +62,11 @@ export default {
 				text: 'Strange marriage of the Wikipedia and Instagram',
 				url: window.location.origin,
 			});
+
+			this.notification = "Contant pasted to the clipboard!"
+
+			setTimeout(() => { this.notification = null;
+				console.log("WTF") }, 2000);
 		},
 
 		bottomCheck() {
@@ -322,4 +337,13 @@ export default {
 		max-width: 960px;
 	}
 }
+
+.fade-enter-active, .fade-leave-active {
+  transition: margin-top .25s;
+}
+.fade-enter-from, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  margin-top: -5rem;
+}
+
+
 </style>
