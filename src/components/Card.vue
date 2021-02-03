@@ -103,8 +103,7 @@ export default {
 	}
 
 	.card-figure {
-		min-width: 250px;
-		width: 40%;
+		width: 240px;
 	}
 
 	.card-content {
