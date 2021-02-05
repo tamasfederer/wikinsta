@@ -31,7 +31,7 @@ export default {
 	border-width: 0px;
 	background-color: var(--color-bg-success);
 	color: var(--color-fg-success);
-	opacity: 0.85;
+	opacity: 0.75;
 
 	min-width: 250px;
 }
