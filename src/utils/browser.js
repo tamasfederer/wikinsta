@@ -32,11 +32,11 @@ var browser = {
 	},
 
 	isWebshareApiEnabled() {
-		if (navigator.share !== undefined) {
+		if (navigator.share) {
 			return true
+		} else {
+			return false
 		}
-
-		return false
 	},
 
 	shareByWebshareApi(data = null) {
