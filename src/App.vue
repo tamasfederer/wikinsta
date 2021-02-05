@@ -3,7 +3,7 @@
 		<Notification v-if="notification">{{notification}}</Notification>
 	</transition>
 	<div class="header">
-		<img class="logo" alt="WikInsta" src="./assets/logo.png" @click="share">
+		<img class="logo" alt="WikInsta" src="./assets/logo.png" @click="share(null)">
 	</div>
 	<div class="content" ref="container" @evnt='share'>
 		<p class="info" style="color: rgb(24, 24, 24); text-shadow: 0px 0px 1px black;">Hello there!</p>
@@ -11,18 +11,18 @@
 		<p class="info"><a href="/">Wikinsta</a> has been created to make this easier!</p>
 		<p class="info">If you like it, please <a href="https://donate.wikimedia.org/w/index.php?title=Special:LandingPage&country=FR&uselang=en&utm_medium=wmfMedium&utm_source=LaunchPost&utm_campaign=comms">support</a> the guys at Wikimedia. Thanks!</p>
 		<p class="info" style="padding-bottom: 2rem;">Feel free to <a href="https://github.com/tamasfederer/wikinsta">contribute</a>, report an <a href="https://github.com/tamasfederer/wikinsta/issues">issue</a>!</p>
-		<Article v-for="(article, index) in articles" :key="index" :article="article" />
+		<Article @share="share" v-for="(article, index) in articles" :key="index" :article="article" />
 	</div>
 </template>
 <script>
 import Article from '@/components/Article.vue';
 import Notification from '@/components/Notification.vue';
 
-import share from '@/utils/share';
 import Wiki from '@/utils/wiki';
 import browser from '@/utils/browser';
 
 const ARTICLE_TO_RENDER = 5;
+const NOTIFICATION_TIMEOUT = 2000;
 
 export default {
 	name: 'App',
@@ -51,19 +51,27 @@ export default {
 			})
 	},
 	methods: {
-		// Share content
-		share() {
-			share.shareDataByItems({
-				title: 'WikInsta',
-				text: 'Strange marriage of the Wikipedia and Instagram',
-				url: window.location.origin,
-			});
+		share(data = null) {
+			if (!data) {
+				data = {
+					'title': 'WikInsta',
+					'text': 'Strange marriage of the Wikipedia and Instagram',
+					'url': window.location.origin,
+				}
+			}
 
-			this.notification = "Contant pasted to the clipboard!"
+			if (browser.isWebshareApiEnabled()) {
+				browser.shareByWebshareApi(data).then(() => {
+					this.notification = data['title'] + " shared!"
+				})
+			} else {
+				browser.shareByClipboard(data)
+				this.notification = data['title'] + " URL copied to the clipboard!"
+			}
 
 			setTimeout(() => {
 				this.notification = null;
-			}, 2000);
+			}, NOTIFICATION_TIMEOUT);
 		},
 
 		render() {

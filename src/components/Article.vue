@@ -16,7 +16,6 @@
 	</div>
 </template>
 <script>
-import share from '@/utils/share'
 import browser from '@/utils/browser'
 
 export default {
@@ -67,19 +66,19 @@ export default {
 			return this.article.thumbnail;
 		}
 	},
-	// emits: ['evnt'],
+	emits: [
+		'share'
+	],
 	methods: {
 		// Share content
 		share() {
-			share.shareDataByItems({
-				title: 'WikInsta',
-				text: 'Strange marriage of the Wikipedia and Instagram',
-				url: window.location.origin,
-			});
+			let data = {
+				'title': this.title,
+				'text': this.extract,
+				'url': this.url,
+			}
 
-
-			console.log("emit event")
-			this.$emit('evnt')
+			this.$emit('share', data);
 		},
 	}
 }
