@@ -1,7 +1,7 @@
 <template>
 	<div class="footer">
 		<IconImage class="icon" :class="{ active: isImage }" @click="changeImage"/>
-		<IconLightbulb class="icon" />
+		<IconLightbulb class="icon" @click="changeTheme"/>
 		<IconLanguage class="icon" />
 		<IconTrash class="icon" @click="reset"/>
 	</div>
@@ -25,12 +25,13 @@ export default {
 	data() {
 		return {
 			isImage: false,
+			isDark: false,
 		}
 	},
 	emits: [
 		'language',
 		'image',
-		'color',
+		'theme',
 		'reset',
 	],
 	computed: {
@@ -47,6 +48,15 @@ export default {
 			}
 
 			this.$emit('image', this.isImage);
+		},
+		changeTheme() {
+			if (this.isDark) {
+				this.isDark = false;
+			} else {
+				this.isDark = true;
+			}
+
+			this.$emit('theme', this.isDark);
 		},
 		reset() {
 			this.$emit('reset');
@@ -82,11 +92,11 @@ export default {
 
 	transition: 0.2s;
 
-	fill: var(--color-fg-light);
+	fill: var(--color-fg);
 }
 
 .active {
-	fill: var(--color-fg-light-active);
+	fill: var(--color-fg-active);
 }
 
 .icon:hover {

@@ -23,8 +23,8 @@ export default {
 
 	border-radius: 10px;
 	border-width: 0px;
-	background-color: var(--color-fg-light);
-	color: var(--color-bg-light);
+	background-color: var(--color-fg);
+	color: var(--color-bg);
 	opacity: 0.75;
 
 	min-width: 250px;

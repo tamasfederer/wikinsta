@@ -2,20 +2,24 @@
 :root {
 	font-size: 1rem;
 	font-family: "Trebuchet MS", Helvetica, sans-serif;
+}
 
-	--color-bg-light: rgb(255, 255, 255);
-	--color-fg-light: rgb(48, 48, 48);
+.theme-light {
+	--color-bg: rgb(255, 255, 255);
+	--color-fg: rgb(48, 48, 48);
+	--color-fg-active: rgb(51, 102, 255);
+	--color-link: rgb(24, 24, 192);
+	--color-link-active: rgb(51, 102, 255);
+	--color-scrollbar-fg: rgb(128, 128, 128);
+}
 
-	--color-fg-light-active: rgb(0, 153, 0);
-
-	--color-link-light: rgb(24, 24, 192);
-	--color-link-active-light: rgb(51, 102, 255);
-
-/*	--color-bg-light: rgb(16, 16, 16);
-	--color-fg-light: rgb(224, 224, 224);
-
-	--color-link-light: rgb(153, 204, 255);
-	--color-link-active-light: rgb(102, 153, 255);*/
+.theme-dark {
+	--color-bg: rgb(16, 16, 16);
+	--color-fg: rgb(192, 192, 192);
+	--color-fg-active: rgb(51, 102, 255);
+	--color-link: rgb(102, 153, 255);
+	--color-link-active: rgb(51, 102, 255);
+	--color-scrollbar-fg: rgb(128, 128, 128);
 }
 
 /** {
@@ -37,24 +41,24 @@ body::-webkit-scrollbar {
 }
 
 body::-webkit-scrollbar-track {
-	background: rgb(220, 220, 220)
+	background: var(--color-bg);
 }
 
 body::-webkit-scrollbar-thumb {
-	background: rgb(128, 128, 128)
+	background: var(--color-scrollbar-fg);
 }
 
 p {
 	margin: 0;
 	padding: 0;
-	color: var(--color-fg-light);
+	color: var(--color-fg);
 }
 
 a {
 	text-decoration: none;
-	color: var(--color-link-light);
+	color: var(--color-link);
 }
 
 a:hover {
-	color: var(--color-link-active-light);
+	color: var(--color-link-active);
 }

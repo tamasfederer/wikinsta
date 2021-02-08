@@ -143,7 +143,7 @@ export default {
 	bottom: 0;
 	right: 0.5rem;
 
-	fill: var(--color-fg-light);
+	fill: var(--color-fg);
 }
 
 .card-share:hover {

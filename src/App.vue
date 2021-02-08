@@ -2,12 +2,12 @@
 	<transition name="fade">
 		<Notification v-if="notification">{{notification}}</Notification>
 	</transition>
-	<Header @share="share" />
+	<Header @share="share" :isDark=isDark />
 	<div class="container">
 		<Introduction />
 		<Article @share="share" v-for="(article, index) in articles" :key="index" :article="article" />
 	</div>
-	<Footer @image="image" @reset="reset" />
+	<Footer @image="image" @reset="reset" @theme="theme" />
 </template>
 <script>
 import Header from '@/components/Header.vue';
@@ -40,6 +40,8 @@ export default {
 			isThumbnailNeeded: false,
 
 			notification: null,
+
+			isDark: false,
 		}
 	},
 	mounted() {
@@ -53,12 +55,21 @@ export default {
 			})
 	},
 	methods: {
-		image(data) {
-			this.isThumbnailNeeded = data;
+		image(isThumbnailNeeded) {
+			this.isThumbnailNeeded = isThumbnailNeeded;
+		},
+		theme(isDark) {
+			this.isDark = isDark;
+
+			if (isDark) {
+				document.documentElement.className = 'theme-dark';
+			} else {
+				document.documentElement.className = 'theme-light';
+			}
 		},
 		reset() {
 			this.articles = [];
-			
+
 			// Initialize Article pool and get first articles
 			this.wiki.getRandomArticles()
 				.then(() => {
@@ -98,7 +109,7 @@ export default {
 </script>
 <style lang="css" scoped>
 .container {
-	background-color: var(--color-bg-light);
+	background-color: var(--color-bg);
 
 	padding-top: 48px;
 

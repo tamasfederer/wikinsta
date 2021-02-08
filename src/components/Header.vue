@@ -1,11 +1,18 @@
 <template>
 	<div class="header">
-		<img class="logo" alt="WikInsta" src="@/assets/logo.png" @click="share">
+		<img v-if="isDark" class="logo" alt="WikInsta" src="@/assets/logo-dark.png" @click="share">
+		<img v-else class="logo" alt="WikInsta" src="@/assets/logo-light.png" @click="share">
 	</div>
 </template>
 <script>
 export default {
 	name: 'Header',
+	props: {
+		isDark: {
+			type: Boolean,
+			default: false,
+		},
+	},
 	emits: [
 		'share'
 	],
@@ -33,7 +40,7 @@ export default {
 	width: 100%;
 	height: 48px;
 
-	background-color: var(--color-bg-light);
+	background-color: var(--color-bg);
 
 	z-index: 100;
 }
@@ -42,26 +49,26 @@ export default {
 	width: auto;
 	height: auto;
 
-	height: 44px;
+	height: 36px;
 
-	margin-top: 2px;
+	margin-top: 6px;
 
 	transition: 0.2s;
 }
 
 .logo:hover {
-	height: 48px;
+	height: 40px;
 
-	margin-top: 0px;
+	margin-top: 4px;
 
 	transition: 0.2s;
 	cursor: pointer;
 }
 
 .logo:active {
-	height: 46px;
+	height: 38px;
 
-	margin-top: 1px;
+	margin-top: 5px;
 
 	transition: 0.1s;
 }
