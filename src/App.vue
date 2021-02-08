@@ -2,19 +2,18 @@
 	<transition name="fade">
 		<Notification v-if="notification">{{notification}}</Notification>
 	</transition>
-	<div class="header">
-		<img class="logo" alt="WikInsta" src="./assets/logo.png" @click="share(null)">
-	</div>
-	<div class="content" ref="container" @evnt='share'>
-		<p class="info" style="color: rgb(24, 24, 24); text-shadow: 0px 0px 1px black;">Hello there!</p>
-		<p class="info">Did you know that in June 2018 the US Android users spent more than <a href="https://www.vox.com/2018/6/25/17501224/instagram-facebook-snapchat-time-spent-growth-data">50 minutes</a> per day on Instagram? Can you imagine what could be achieved during that time? One can learn a language or a new skill, or a bunch of information can be consumed and the general knowledge of the individual can be increased! This is extremely important, especially these days when misinformation and false news can be found everywhere!</p>
-		<p class="info"><a href="/">Wikinsta</a> has been created to make this easier!</p>
-		<p class="info">If you like it, please <a href="https://donate.wikimedia.org/w/index.php?title=Special:LandingPage&country=FR&uselang=en&utm_medium=wmfMedium&utm_source=LaunchPost&utm_campaign=comms">support</a> the guys at Wikimedia. Thanks!</p>
-		<p class="info" style="padding-bottom: 2rem;">Feel free to <a href="https://github.com/tamasfederer/wikinsta">contribute</a>, report an <a href="https://github.com/tamasfederer/wikinsta/issues">issue</a>!</p>
+	<Header @share="share" />
+	<div class="container">
+		<Introduction />
 		<Article @share="share" v-for="(article, index) in articles" :key="index" :article="article" />
 	</div>
+	<Footer @image="image" />
 </template>
 <script>
+import Header from '@/components/Header.vue';
+import Footer from '@/components/Footer.vue';
+import Introduction from '@/components/Introduction.vue';
+
 import Article from '@/components/Article.vue';
 import Notification from '@/components/Notification.vue';
 
@@ -27,6 +26,9 @@ const NOTIFICATION_TIMEOUT = 2000;
 export default {
 	name: 'App',
 	components: {
+		Header,
+		Footer,
+		Introduction,
 		Article,
 		Notification,
 	},
@@ -51,15 +53,10 @@ export default {
 			})
 	},
 	methods: {
+		image(data) {
+			this.isThumbnailNeeded = data;
+		},
 		share(data = null) {
-			if (!data) {
-				data = {
-					'title': 'WikInsta',
-					'text': 'Strange marriage of the Wikipedia and Instagram',
-					'url': window.location.origin,
-				}
-			}
-
 			if (browser.isWebshareApiEnabled()) {
 				browser.shareByWebshareApi(data).then(() => {
 					this.notification = data['title'] + " shared!"
@@ -91,43 +88,11 @@ export default {
 }
 </script>
 <style lang="css" scoped>
-.header {
-	position: fixed;
-	top: 0;
+.container {
+	background-color: var(--color-bg-light);
 
-	text-align: center;
+	padding-top: 48px;
 
-	width: 100%;
-	height: 50px;
-
-	background-color: white;
-
-	z-index: 100;
-}
-
-.logo {
-	width: auto;
-	height: auto;
-
-	height: 50px;
-
-	transition: 0.2s;
-}
-
-.logo:hover {
-	height: 54px;
-
-	transition: 0.2s;
-	cursor: pointer;
-}
-
-.logo:active {
-	height: 52px;
-	transition: 0.1s;
-}
-
-.content {
-	padding-top: 75px;
 	width: 50%;
 
 	margin: auto;
@@ -135,27 +100,20 @@ export default {
 	text-align: justify;
 }
 
-.info {
-	padding-left: 0.5rem;
-	padding-right: 0.5rem;
-
-	padding-bottom: 0.5rem;
-}
-
 @media only screen and (min-width: 480px) {
-	.content {
+	.container {
 		width: 480px;
 	}
 }
 
 @media only screen and (max-width: 480px) {
-	.content {
+	.container {
 		width: 100%;
 	}
 }
 
 @media only screen and (orientation: landscape) {
-	.content {
+	.container {
 		width: 100%;
 		max-width: 960px;
 	}

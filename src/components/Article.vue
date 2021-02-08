@@ -3,32 +3,40 @@
 		<img class="card-figure" :src=thumbnail>
 		<div class="card-content">
 			<p class="card-text">
-				<a class="card-header" :href=url target="_blank">{{title}}</a>
+				<a :href=url target="_blank"><b>{{title}}</b></a>
 				<span>&nbsp;{{extract}}</span>
 			</p>
 			<ul class="card-category-list">
 				<li class="card-category" v-for="(value, name) in categories" :key="name"><a :href=value target="_blank">{{name}}&nbsp;</a></li>
 			</ul>
-			<div class="card-share">
-				<img class="card-share-img" alt="WikInsta" src="@/assets/share.png" @click="share">
-			</div>
+			<IconShare class="card-share" @click="share" v-if=isMobile />
+			<iconCopy class="card-share" @click="share" v-else />
 		</div>
 	</div>
 </template>
 <script>
 import browser from '@/utils/browser'
 
+import IconShare from '@/components/Icon/IconShare';
+import IconCopy from '@/components/Icon/IconCopy';
+
 export default {
 	name: 'Article',
+	components: {
+		IconShare,
+		IconCopy,
+	},
 	props: {
 		article: Object,
 	},
-	data() {
-		return {
-			notification: "HELLO",
-		}
-	},
 	computed: {
+		isMobile() {
+			if (browser.isMobile()) {
+				return true;
+			} else {
+				return false;
+			}
+		},
 		title() {
 			return this.article['title'];
 		},
@@ -90,21 +98,6 @@ export default {
 	padding-bottom: 1.5rem;
 }
 
-.card-header {
-	font-size: 1rem;
-	margin: 0;
-
-	color: rgb(24, 24, 24);
-
-	text-shadow: 0px 0px 1px black;
-
-	text-decoration: none;
-}
-
-.card-header:hover {
-	color: rgb(64, 64, 192);
-}
-
 .card-text {
 	padding-bottom: 0.25rem;
 }
@@ -113,7 +106,7 @@ export default {
 	padding-left: 0.5rem;
 	padding-right: 0.5rem;
 
-	width: 100%;
+	width: calc(100% - 1rem);
 
 	z-index: 1;
 	position: relative;
@@ -149,6 +142,29 @@ export default {
 	position: absolute;
 	bottom: 0;
 	right: 0.5rem;
+
+	fill: var(--color-fg-light);
+}
+
+.card-share:hover {
+	height: 36px;
+	width: 36px;
+
+	margin-bottom: -2px;
+	margin-right: -2px;
+
+	transition: 0.2s;
+	cursor: pointer;
+}
+
+.card-share:active {
+	height: 34px;
+	width: 34px;
+
+	margin-bottom: -1px;
+	margin-right: -1px;
+
+	transition: 0.1s;
 }
 
 @media only screen and (orientation: landscape) {
@@ -158,6 +174,7 @@ export default {
 
 	.card-figure {
 		width: 240px;
+		padding-left: 0.5rem;
 	}
 
 	.card-content {

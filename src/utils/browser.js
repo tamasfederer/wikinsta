@@ -68,6 +68,14 @@ var browser = {
 			document.body.removeChild(el);
 		}
 	},
+
+	getLanguage() {
+		if (window.navigator.languages) {
+			return (window.navigator.languages[0]);
+		} else {
+			return (window.navigator.userLanguage || window.navigator.language);
+		}
+	},
 }
 
 export default browser

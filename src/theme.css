@@ -3,14 +3,33 @@
 	font-size: 1rem;
 	font-family: "Trebuchet MS", Helvetica, sans-serif;
 
-	--color-bg-success: black;
-	--color-fg-success: white;
+	--color-bg-light: rgb(255, 255, 255);
+	--color-fg-light: rgb(48, 48, 48);
+
+	--color-fg-light-active: rgb(0, 153, 0);
+
+	--color-link-light: rgb(24, 24, 192);
+	--color-link-active-light: rgb(51, 102, 255);
+
+/*	--color-bg-light: rgb(16, 16, 16);
+	--color-fg-light: rgb(224, 224, 224);
+
+	--color-link-light: rgb(153, 204, 255);
+	--color-link-active-light: rgb(102, 153, 255);*/
 }
+
+/** {
+  background: #000 !important;
+  color: #0f0 !important;
+  outline: solid #f00 1px !important;
+}*/
 
 body {
 	margin: 0;
 	padding: 0;
 	width: 100%;
+	height: 100%;
+	overflow-x: hidden;
 }
 
 body::-webkit-scrollbar {
@@ -27,14 +46,15 @@ body::-webkit-scrollbar-thumb {
 
 p {
 	margin: 0;
-	color: rgb(48, 48, 48); 
+	padding: 0;
+	color: var(--color-fg-light);
 }
 
 a {
 	text-decoration: none;
-	color: rgb(24, 24, 192);;
+	color: var(--color-link-light);
 }
 
 a:hover {
-	color: rgb(64, 64, 192);;
+	color: var(--color-link-active-light);
 }
