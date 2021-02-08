@@ -7,7 +7,7 @@
 		<Introduction />
 		<Article @share="share" v-for="(article, index) in articles" :key="index" :article="article" />
 	</div>
-	<Footer @image="image" />
+	<Footer @image="image" @reset="reset" />
 </template>
 <script>
 import Header from '@/components/Header.vue';
@@ -55,6 +55,15 @@ export default {
 	methods: {
 		image(data) {
 			this.isThumbnailNeeded = data;
+		},
+		reset() {
+			this.articles = [];
+			
+			// Initialize Article pool and get first articles
+			this.wiki.getRandomArticles()
+				.then(() => {
+					this.render();
+				})
 		},
 		share(data = null) {
 			if (browser.isWebshareApiEnabled()) {
