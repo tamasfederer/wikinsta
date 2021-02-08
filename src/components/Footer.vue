@@ -73,7 +73,7 @@ export default {
 	width: 100vw;
 	height: 48px;
 
-	background-color: var(--color-bg-light);
+	background-color: var(--color-bg);
 
 	z-index: 100;
 

@@ -28,6 +28,10 @@ export default {
 	},
 	props: {
 		article: Object,
+		isDark: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	computed: {
 		isMobile() {
@@ -68,7 +72,11 @@ export default {
 		},
 		thumbnail() {
 			if (this.article.thumbnail === null) {
-				return require("@/assets/nopic.png");
+				if (this.isDark) {
+					return require("@/assets/nopic-dark.png");
+				} else {
+					return require("@/assets/nopic-light.png");
+				}
 			}
 
 			return this.article.thumbnail;

@@ -5,7 +5,7 @@
 	<Header @share="share" :isDark=isDark />
 	<div class="container">
 		<Introduction />
-		<Article @share="share" v-for="(article, index) in articles" :key="index" :article="article" />
+		<Article @share="share" v-for="(article, index) in articles" :key="index" :article="article" :isDark=isDark />
 	</div>
 	<Footer @image="image" @reset="reset" @theme="theme" />
 </template>
