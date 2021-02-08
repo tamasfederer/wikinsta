@@ -32,6 +32,7 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		language: String,
 	},
 	computed: {
 		isMobile() {
@@ -49,9 +50,9 @@ export default {
 		},
 		url() {
 			if (browser.isMobile()) {
-				return "http://en.m.wikipedia.org/?curid=" + this.article['pageid'];
+				return "http://" + this.language + ".m.wikipedia.org/?curid=" + this.article['pageid'];
 			} else {
-				return "http://en.wikipedia.org/?curid=" + this.article['pageid'];
+				return "http://" + this.language + ".wikipedia.org/?curid=" + this.article['pageid'];
 			}
 		},
 		categories() {
@@ -59,12 +60,19 @@ export default {
 
 			for (var i = 0; i < this.article['categories'].length; i++) {
 				let title = this.article['categories'][i]
-				let hashtag = "#" + title.substring(9).toLowerCase().replace(/\w\S*/g, (w) => (w.replace(/^\w/, (c) => c.toUpperCase()))).replace(/\s/g, '')
+
+				let categoryLength = 9;
+
+				if (this.language === "hu") {
+					categoryLength = 10;
+				}
+
+				let hashtag = "#" + title.substring(categoryLength).toLowerCase().replace(/\w\S*/g, (w) => (w.replace(/^\w/, (c) => c.toUpperCase()))).replace(/\s/g, '')
 
 				if (browser.isMobile()) {
-					cat[hashtag] = "https://en.m.wikipedia.org/wiki/" + title
+					cat[hashtag] = "https://" + this.language + ".m.wikipedia.org/wiki/" + title
 				} else {
-					cat[hashtag] = "https://en.wikipedia.org/wiki/" + title
+					cat[hashtag] = "https://" + this.language + ".wikipedia.org/wiki/" + title
 				}
 			}
 

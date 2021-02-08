@@ -5,14 +5,16 @@
 	<Header @share="share" :isDark=isDark />
 	<div class="container">
 		<Introduction />
-		<Article @share="share" v-for="(article, index) in articles" :key="index" :article="article" :isDark=isDark />
+		<Article @share="share" v-for="(article, index) in articles" :key="index" :article="article" :isDark=isDark :language=lang />
 	</div>
-	<Footer @image="image" @reset="reset" @theme="theme" />
+	<Footer @image="image" @reset="reset" @theme="theme" @language="language" />
+	<!-- <LanguageSelect /> -->
 </template>
 <script>
 import Header from '@/components/Header.vue';
 import Footer from '@/components/Footer.vue';
 import Introduction from '@/components/Introduction.vue';
+// import LanguageSelect from '@/components/LanguageSelect.vue';
 
 import Article from '@/components/Article.vue';
 import Notification from '@/components/Notification.vue';
@@ -31,6 +33,7 @@ export default {
 		Introduction,
 		Article,
 		Notification,
+		// LanguageSelect,
 	},
 	data() {
 		return {
@@ -42,22 +45,19 @@ export default {
 			notification: null,
 
 			isDark: false,
+
+			lang: "en",
 		}
 	},
 	mounted() {
-		// Register Wiki
-		this.wiki = new Wiki();
-
 		// Initialize Article pool and get first articles
-		this.wiki.getRandomArticles()
-			.then(() => {
-				this.render();
-			})
+		this.reset()
 	},
 	methods: {
 		image(isThumbnailNeeded) {
 			this.isThumbnailNeeded = isThumbnailNeeded;
 		},
+
 		theme(isDark) {
 			this.isDark = isDark;
 
@@ -67,7 +67,11 @@ export default {
 				document.documentElement.className = 'theme-light';
 			}
 		},
+
 		reset() {
+			// Register Wiki
+			this.wiki = new Wiki({ language: this.lang });
+
 			this.articles = [];
 
 			// Initialize Article pool and get first articles
@@ -76,6 +80,17 @@ export default {
 					this.render();
 				})
 		},
+
+		language() {
+			if (this.lang === "en") {
+				this.lang = "hu"
+			} else if (this.lang === "hu") {
+				this.lang = "en"
+			}
+
+			this.reset();
+		},
+
 		share(data = null) {
 			if (browser.isWebshareApiEnabled()) {
 				browser.shareByWebshareApi(data).then(() => {

@@ -1,9 +1,9 @@
 <template>
 	<div class="footer">
-		<IconImage class="icon" :class="{ active: isImage }" @click="changeImage"/>
-		<IconLightbulb class="icon" @click="changeTheme"/>
-		<IconLanguage class="icon" />
-		<IconTrash class="icon" @click="reset"/>
+		<IconImage class="icon" :class="{ active: isImage }" @click="changeImage" />
+		<IconLightbulb class="icon" @click="changeTheme" />
+		<IconLanguage class="icon" @click="changeLanguage" />
+		<IconTrash class="icon" @click="reset" />
 	</div>
 </template>
 <script>
@@ -57,6 +57,9 @@ export default {
 			}
 
 			this.$emit('theme', this.isDark);
+		},
+		changeLanguage() {
+			this.$emit('language');
 		},
 		reset() {
 			this.$emit('reset');

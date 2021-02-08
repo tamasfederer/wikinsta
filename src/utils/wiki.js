@@ -1,15 +1,17 @@
 import axios from 'axios'
 
-const WIKI_API_URL = "https://en.wikipedia.org/w/api.php";
+const WIKI_API_URL = ".wikipedia.org/w/api.php";
 const ARTICLE_CACHE_COUNT = 500;
 const ARTICLE_CACHE_LIMIT = 50;
+const LANGUAGE = "en";
 
 export default class Wiki {
-	constructor({ articleCacheCount = ARTICLE_CACHE_COUNT, articleCacheLimit = ARTICLE_CACHE_LIMIT } = {}) {
+	constructor({ articleCacheCount = ARTICLE_CACHE_COUNT, articleCacheLimit = ARTICLE_CACHE_LIMIT, language = LANGUAGE } = {}) {
 		// Set default variables
 		this.articleIds = [];
 		this.articleCacheCount = articleCacheCount;
 		this.articleCacheLimit = articleCacheLimit;
+		this.language = language;
 
 		// Cache shall be bigger than limit
 		if (this.articleCacheCount <= this.articleCacheLimit) {
@@ -24,13 +26,17 @@ export default class Wiki {
 		}
 
 		// Construct request
-		let request = WIKI_API_URL +
+		let request = "https://" +
+			this.language + 
+			WIKI_API_URL +
 			"?origin=*" +
 			"&action=query" +
 			"&format=json" +
 			"&list=random" +
 			"&rnnamespace=0" +
 			"&rnlimit=" + articleCount;
+
+		console.log(request)
 
 		// Return the promise
 		return axios.get(request)
@@ -53,7 +59,9 @@ export default class Wiki {
 		}
 
 		// Create request
-		let request = WIKI_API_URL +
+		let request = "https://" +
+			this.language + 
+			WIKI_API_URL +
 			"?origin=*" +
 			"&action=query" +
 			"&format=json" +
