@@ -3,7 +3,7 @@
 		<img class="card-figure" :src=thumbnail>
 		<div class="card-content">
 			<p class="card-text">
-				<a :href=url target="_blank"><b>{{title}}</b></a>
+				<a :href=link target="_blank"><b>{{title}}</b></a>
 				<span>&nbsp;{{extract}}</span>
 			</p>
 			<ul class="card-category-list">
@@ -48,32 +48,14 @@ export default {
 		extract() {
 			return this.article['extract'];
 		},
-		url() {
-			if (browser.isMobile()) {
-				return "http://" + this.language + ".m.wikipedia.org/?curid=" + this.article['pageid'];
-			} else {
-				return "http://" + this.language + ".wikipedia.org/?curid=" + this.article['pageid'];
-			}
+		link() {
+			return this.article['link'];
 		},
 		categories() {
 			const cat = {};
 
 			for (var i = 0; i < this.article['categories'].length; i++) {
-				let title = this.article['categories'][i]
-
-				let categoryLength = 9;
-
-				if (this.language === "hu") {
-					categoryLength = 10;
-				}
-
-				let hashtag = "#" + title.substring(categoryLength).toLowerCase().replace(/\w\S*/g, (w) => (w.replace(/^\w/, (c) => c.toUpperCase()))).replace(/\s/g, '')
-
-				if (browser.isMobile()) {
-					cat[hashtag] = "https://" + this.language + ".m.wikipedia.org/wiki/" + title
-				} else {
-					cat[hashtag] = "https://" + this.language + ".wikipedia.org/wiki/" + title
-				}
+				cat[this.article['categories'][i]['hashtag']] = this.article['categories'][i]['link'];
 			}
 
 			return cat
@@ -99,7 +81,7 @@ export default {
 			let data = {
 				'title': this.title,
 				'text': this.extract,
-				'url': this.url,
+				'url': this.link,
 			}
 
 			this.$emit('share', data);

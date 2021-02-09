@@ -71,9 +71,9 @@ export default {
 .footer {
 	position: fixed;
 	bottom: 0;
-	right: calc((100vw - 480px) / 2);
+	right: calc((100% - 480px) / 2);
 
-	width: 100vw;
+	width: 100vh;
 	height: 48px;
 
 	background-color: var(--color-bg);

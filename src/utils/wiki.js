@@ -1,14 +1,20 @@
 import axios from 'axios'
+import browser from '@/utils/browser'
 
-const WIKI_API_URL = ".wikipedia.org/w/api.php";
+const WIKI_URL = "wikipedia.org";
 const ARTICLE_CACHE_COUNT = 500;
 const ARTICLE_CACHE_LIMIT = 50;
 const LANGUAGE = "en";
 
+const CATEGORY_LIST = {
+	'en': 'Category',
+	'hu': 'Kategoria',
+};
+
 export default class Wiki {
 	constructor({ articleCacheCount = ARTICLE_CACHE_COUNT, articleCacheLimit = ARTICLE_CACHE_LIMIT, language = LANGUAGE } = {}) {
 		// Set default variables
-		this.articleIds = [];
+		this.articles = [];
 		this.articleCacheCount = articleCacheCount;
 		this.articleCacheLimit = articleCacheLimit;
 		this.language = language;
@@ -25,18 +31,20 @@ export default class Wiki {
 			articleCount = this.articleCacheCount
 		}
 
+		// Save language
+		let language = this.language;
+
 		// Construct request
 		let request = "https://" +
-			this.language + 
-			WIKI_API_URL +
+			language + "." +
+			WIKI_URL +
+			"/w/api.php" +
 			"?origin=*" +
 			"&action=query" +
 			"&format=json" +
 			"&list=random" +
 			"&rnnamespace=0" +
 			"&rnlimit=" + articleCount;
-
-		console.log(request)
 
 		// Return the promise
 		return axios.get(request)
@@ -46,22 +54,30 @@ export default class Wiki {
 
 				// Save the ID's
 				for (var i = 0; i < data.length; i++) {
-					this.articleIds.push(data[i]['id']);
+					this.articles.push({
+						'id': data[i]['id'],
+						'language': language,
+					});
 				}
 			})
 			.catch(error => console.log(error))
 	}
 
-	getArticleById({ articleId = null } = {}) {
+	getArticleById({ articleId = null, language = null } = {}) {
 		// Check if article is NULL
 		if (articleId === null) {
-			return null
+			return null;
+		}
+
+		if (language === null) {
+			language = this.language;
 		}
 
 		// Create request
 		let request = "https://" +
-			this.language + 
-			WIKI_API_URL +
+			language + "." +
+			WIKI_URL +
+			"/w/api.php" +
 			"?origin=*" +
 			"&action=query" +
 			"&format=json" +
@@ -79,6 +95,9 @@ export default class Wiki {
 					// Get data
 					let data = result.data['query']['pages'][articleId];
 
+					// Save language
+					data['language'] = language;
+
 					// Resolve
 					resolve(this.convertDataToArticle({ data: data }))
 				})
@@ -88,30 +107,30 @@ export default class Wiki {
 
 	getArticleNext({ isThumbnailNeeded = false } = {}) {
 		// If there's no more article --> Return with 0
-		if (this.articleIds.length === 0) {
+		if (this.articles.length === 0) {
 			return new Promise((resolve) => {
 				return resolve(null)
 			})
 		}
 
 		// Get next ID
-		let articleId = this.articleIds.shift();
+		let article = this.articles.shift();
 
 		// Check ID's
-		if (this.articleIds.length == this.articleCacheLimit) {
+		if (this.articles.length == this.articleCacheLimit) {
 			this.getRandomArticles()
 		}
 
 		// Create promise
 		return new Promise((resolve) => {
-			this.getArticleById({ articleId: articleId })
-				.then(result => {
-					if ((isThumbnailNeeded == true) && (result['thumbnail'] === null)) {
+			this.getArticleById({ articleId: article['id'], language: article['language'] })
+				.then(data => {
+					if ((isThumbnailNeeded == true) && (data['thumbnail'] === null)) {
 						return resolve(this.getArticleNext({
 							isThumbnailNeeded: isThumbnailNeeded,
 						}));
 					} else {
-						return resolve(result)
+						return resolve(data)
 					}
 				})
 		})
@@ -130,6 +149,17 @@ export default class Wiki {
 		article['title'] = data['title'];
 		article['extract'] = data['extract'];
 
+		// Get if mobile
+		let medium = browser.isMobile() ? ".m" : "";
+
+		// Save link
+		article['link'] = "https://" +
+			data['language'] +
+			medium + "." +
+			WIKI_URL +
+			"/?curid=" +
+			data['pageid'];
+
 		// If there's no thumbnail then it's NULL
 		if ('thumbnail' in data) {
 			article['thumbnail'] = data['thumbnail']['source'];
@@ -139,9 +169,37 @@ export default class Wiki {
 
 		article['categories'] = [];
 
+		// Get category length
+		let categoryLength = 0;
+
+		for (var k in CATEGORY_LIST) {
+			if (k === data['language']) {
+				categoryLength = CATEGORY_LIST[k].length + 1;
+			}
+		}
+
 		if ('categories' in data) {
 			for (var i = 0; i < data['categories'].length; i++) {
-				article['categories'].push(data['categories'][i]['title'])
+				// Get link
+				let link = "https://" +
+					data['language'] +
+					medium + "." +
+					WIKI_URL +
+					"/wiki/" +
+					data['categories'][i]['title'];
+
+				// Get category link
+				let title = data['categories'][i]['title'].substr(categoryLength);
+
+				// Get hashtag
+				let hashtag = "#" + title.toLowerCase().replace(/\w\S*/g, (w) => (w.replace(/^\w/, (c) => c.toUpperCase()))).replace(/\s/g, '')
+
+				// Save article
+				article['categories'].push({
+					'title': title,
+					'hashtag': hashtag,
+					'link': link,
+				});
 			}
 		}
 

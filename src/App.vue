@@ -22,11 +22,12 @@ import Notification from '@/components/Notification.vue';
 import Wiki from '@/utils/wiki';
 import browser from '@/utils/browser';
 
-const ARTICLE_TO_RENDER = 5;
+const ARTICLE_TO_RENDER = 1;
 const NOTIFICATION_TIMEOUT = 2000;
 
 export default {
 	name: 'App',
+
 	components: {
 		Header,
 		Footer,
@@ -35,6 +36,7 @@ export default {
 		Notification,
 		// LanguageSelect,
 	},
+
 	data() {
 		return {
 			wiki: null,
@@ -47,12 +49,33 @@ export default {
 			isDark: false,
 
 			lang: "en",
+
+			wikiRequestOngoing: 0,
+			requestForReset: false,
 		}
 	},
+
+	watch: {
+		wikiRequestOngoing() {
+			if (this.wikiRequestOngoing === 0) {
+				// If request for reset --> reset
+				if (this.requestForReset) {
+					browser.bottomCheck({ callback: null })
+					this.requestForReset = false;
+					this.reset()
+				} else {
+					// Register Bottom check
+					browser.bottomCheck({ callback: this.render })
+				}
+			}
+		}
+	},
+
 	mounted() {
 		// Initialize Article pool and get first articles
 		this.reset()
 	},
+
 	methods: {
 		image(isThumbnailNeeded) {
 			this.isThumbnailNeeded = isThumbnailNeeded;
@@ -69,16 +92,23 @@ export default {
 		},
 
 		reset() {
-			// Register Wiki
-			this.wiki = new Wiki({ language: this.lang });
+			if (this.wikiRequestOngoing > 0) {
+				this.requestForReset = true;
+			} else {
+				// Register Wiki
+				this.wiki = new Wiki({ language: this.lang });
 
-			this.articles = [];
+				this.articles = [];
 
-			// Initialize Article pool and get first articles
-			this.wiki.getRandomArticles()
-				.then(() => {
-					this.render();
-				})
+				// Initialize Article pool and get first articles
+				this.wikiRequestOngoing += 1
+
+				this.wiki.getRandomArticles()
+					.then(() => {
+						this.wikiRequestOngoing -= 1
+						this.render();
+					})
+			}
 		},
 
 		language() {
@@ -107,15 +137,19 @@ export default {
 		},
 
 		render() {
+			// Disable callback
 			browser.bottomCheck({ callback: null })
+
+			this.wikiRequestOngoing += ARTICLE_TO_RENDER;
 
 			for (var i = 0; i < ARTICLE_TO_RENDER; i++) {
 				this.wiki.getArticleNext({ isThumbnailNeeded: this.isThumbnailNeeded })
 					.then(result => {
+						console.log(result)
+
 						this.articles.push(result)
 
-						// Register Bottom check
-						browser.bottomCheck({ callback: this.render })
+						this.wikiRequestOngoing -= 1;
 					})
 			}
 		},
