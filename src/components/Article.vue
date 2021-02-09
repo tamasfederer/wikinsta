@@ -171,6 +171,7 @@ export default {
 	}
 
 	.card-figure {
+		min-width: 240px;
 		width: 240px;
 		padding-left: 0.5rem;
 	}

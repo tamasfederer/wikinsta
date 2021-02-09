@@ -22,7 +22,7 @@ import Notification from '@/components/Notification.vue';
 import Wiki from '@/utils/wiki';
 import browser from '@/utils/browser';
 
-const ARTICLE_TO_RENDER = 1;
+const ARTICLE_TO_RENDER = 10;
 const NOTIFICATION_TIMEOUT = 2000;
 
 export default {
@@ -50,35 +50,38 @@ export default {
 
 			lang: "en",
 
-			wikiRequestOngoing: 0,
-			requestForReset: false,
+			articleRenderCount: 0,
+
+			timeout: null,
 		}
 	},
 
 	watch: {
-		wikiRequestOngoing() {
-			if (this.wikiRequestOngoing === 0) {
-				// If request for reset --> reset
-				if (this.requestForReset) {
-					browser.bottomCheck({ callback: null })
-					this.requestForReset = false;
-					this.reset()
-				} else {
-					// Register Bottom check
-					browser.bottomCheck({ callback: this.render })
-				}
+		articleRenderCount() {
+			if (this.articleRenderCount === 0) {
+				// Register Bottom check
+				browser.bottomCheck({ callback: this.render });
 			}
 		}
 	},
 
 	mounted() {
-		// Initialize Article pool and get first articles
-		this.reset()
+		// Register Wiki
+		this.wiki = new Wiki();
+
+		// Reset
+		this.reset();
 	},
 
 	methods: {
 		image(isThumbnailNeeded) {
 			this.isThumbnailNeeded = isThumbnailNeeded;
+
+			if (this.isThumbnailNeeded) {
+				this.notify("Only articles with images will be loaded!");
+			} else {
+				this.notify("All articles will be loaded!");
+			}
 		},
 
 		theme(isDark) {
@@ -86,29 +89,25 @@ export default {
 
 			if (isDark) {
 				document.documentElement.className = 'theme-dark';
+				this.notify("Dark theme enabled!");
 			} else {
 				document.documentElement.className = 'theme-light';
+				this.notify("Light theme enabled!");
 			}
 		},
 
 		reset() {
-			if (this.wikiRequestOngoing > 0) {
-				this.requestForReset = true;
-			} else {
-				// Register Wiki
-				this.wiki = new Wiki({ language: this.lang });
+			this.wiki.reinitParameters({
+				language: this.lang,
+			});
 
-				this.articles = [];
+			// Initialize Article pool and get first articles
+			this.articles = [];
 
-				// Initialize Article pool and get first articles
-				this.wikiRequestOngoing += 1
-
-				this.wiki.getRandomArticles()
-					.then(() => {
-						this.wikiRequestOngoing -= 1
-						this.render();
-					})
-			}
+			this.wiki.getRandomArticles()
+				.then(() => {
+					this.render();
+				})
 		},
 
 		language() {
@@ -119,38 +118,50 @@ export default {
 			}
 
 			this.reset();
+
+			this.notify("Language set to " + this.lang + "!");
 		},
 
 		share(data = null) {
 			if (browser.isWebshareApiEnabled()) {
 				browser.shareByWebshareApi(data).then(() => {
-					this.notification = data['title'] + " shared!"
+					this.notify(data['title'] + " shared!");
 				})
 			} else {
-				browser.shareByClipboard(data)
-				this.notification = data['title'] + " URL copied to the clipboard!"
+				browser.shareByClipboard(data);
+				this.notify(data['title'] + " URL copied to the clipboard!");
+			}
+		},
+
+		notify(text = "Hey!") {
+			if (this.notification) {
+				clearTimeout(this.timeout);
 			}
 
-			setTimeout(() => {
+			this.notification = text;
+
+			this.timeout = setTimeout(() => {
 				this.notification = null;
 			}, NOTIFICATION_TIMEOUT);
 		},
 
 		render() {
-			// Disable callback
-			browser.bottomCheck({ callback: null })
+			if (this.articleRenderCount === 0) {
+				// Disable callback
+				browser.bottomCheck({ callback: null })
 
-			this.wikiRequestOngoing += ARTICLE_TO_RENDER;
+				this.articleRenderCount += ARTICLE_TO_RENDER;
 
-			for (var i = 0; i < ARTICLE_TO_RENDER; i++) {
-				this.wiki.getArticleNext({ isThumbnailNeeded: this.isThumbnailNeeded })
-					.then(result => {
-						console.log(result)
+				for (var i = 0; i < ARTICLE_TO_RENDER; i++) {
+					this.wiki.getArticleNext({ isThumbnailNeeded: this.isThumbnailNeeded })
+						.then(result => {
+							if (result !== null) {
+								this.articles.push(result)
+							}
 
-						this.articles.push(result)
-
-						this.wikiRequestOngoing -= 1;
-					})
+							this.articleRenderCount -= 1;
+						})
+				}
 			}
 		},
 	}

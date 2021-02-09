@@ -205,4 +205,12 @@ export default class Wiki {
 
 		return article;
 	}
+
+	reinitParameters({ articleCacheCount = ARTICLE_CACHE_COUNT, articleCacheLimit = ARTICLE_CACHE_LIMIT, language = LANGUAGE } = {}) {
+		this.constructor({
+			articleCacheCount: articleCacheCount,
+			articleCacheLimit: articleCacheLimit,
+			language: language,
+		});
+	}
 }
