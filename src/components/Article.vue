@@ -1,16 +1,16 @@
 <template>
-	<div class="card">
-		<img class="card-figure" :src=thumbnail>
-		<div class="card-content">
-			<p class="card-text">
+	<div class="article">
+		<img class="article-figure" :src=thumbnail :alt=title>
+		<div class="article-content">
+			<p class="article-text">
 				<a :href=link target="_blank"><b>{{title}}</b></a>
 				<span>&nbsp;{{extract}}</span>
 			</p>
-			<ul class="card-category-list">
-				<li class="card-category" v-for="(value, name) in categories" :key="name"><a :href=value target="_blank">{{name}}&nbsp;</a></li>
+			<ul class="article-category-list">
+				<li class="article-category" v-for="(value, name) in categories" :key="name"><a :href=value target="_blank">{{name}}&nbsp;</a></li>
 			</ul>
-			<IconShare class="card-share" @click="share" v-if=isMobile />
-			<iconCopy class="card-share" @click="share" v-else />
+			<IconShare v-if=isMobile class="article-share" @click="share" />
+			<iconCopy  v-else class="article-share" @click="share" />
 		</div>
 	</div>
 </template>
@@ -90,17 +90,17 @@ export default {
 }
 </script>
 <style lang="css" scoped>
-.card {
+.article {
 	display: flex;
 	flex-direction: column;
 	padding-bottom: 1.5rem;
 }
 
-.card-text {
+.article-text {
 	padding-bottom: 0.25rem;
 }
 
-.card-content {
+.article-content {
 	padding-left: 0.5rem;
 	padding-right: 0.5rem;
 
@@ -110,13 +110,13 @@ export default {
 	position: relative;
 }
 
-.card-figure {
+.article-figure {
 	width: 100%;
 	height: 100%;
 	padding-bottom: 0.5rem;
 }
 
-.card-category-list {
+.article-category-list {
 	font-size: 0.75rem;
 	list-style-type: none;
 	margin: 0;
@@ -126,14 +126,14 @@ export default {
 	width: calc(100% - 32px);
 }
 
-.card-category {
+.article-category {
 	float: left;
 
 	word-break: break-word;
 	padding-bottom: 0.25rem;
 }
 
-.card-share {
+.article-share {
 	width: 32px;
 	height: 32px;
 
@@ -144,7 +144,7 @@ export default {
 	fill: var(--color-fg);
 }
 
-.card-share:hover {
+.article-share:hover {
 	height: 36px;
 	width: 36px;
 
@@ -155,7 +155,7 @@ export default {
 	cursor: pointer;
 }
 
-.card-share:active {
+.article-share:active {
 	height: 34px;
 	width: 34px;
 
@@ -166,17 +166,17 @@ export default {
 }
 
 @media only screen and (orientation: landscape) {
-	.card {
+	.article {
 		flex-direction: row;
 	}
 
-	.card-figure {
+	.article-figure {
 		min-width: 240px;
 		width: 240px;
 		padding-left: 0.5rem;
 	}
 
-	.card-content {
+	.article-content {
 		padding-right: 0.5rem;
 	}
 }

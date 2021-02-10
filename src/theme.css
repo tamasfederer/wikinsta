@@ -1,4 +1,3 @@
-/* Generic initialization */
 :root {
 	font-size: 1rem;
 	font-family: "Trebuchet MS", Helvetica, sans-serif;
@@ -6,27 +5,29 @@
 
 .theme-light {
 	--color-bg: rgb(255, 255, 255);
-	--color-fg: rgb(48, 48, 48);
-	--color-fg-active: rgb(51, 102, 255);
-	--color-link: rgb(24, 24, 192);
-	--color-link-active: rgb(51, 102, 255);
-	--color-scrollbar-fg: rgb(128, 128, 128);
+	--color-fg: rgb(64, 64, 64);
+
+	--color-fg-active: rgb(64, 128, 255);
+	--color-link-active: rgb(64, 128, 255);
+
+	--color-link: rgb(0, 64, 224);
+
+	--color-scrollbar-fg: rgb(64, 64, 64);
+	--color-notification-bg: rgb(224, 224, 224);
 }
 
 .theme-dark {
-	--color-bg: rgb(16, 16, 16);
-	--color-fg: rgb(192, 192, 192);
-	--color-fg-active: rgb(51, 102, 255);
-	--color-link: rgb(102, 153, 255);
-	--color-link-active: rgb(51, 102, 255);
-	--color-scrollbar-fg: rgb(128, 128, 128);
-}
+	--color-bg: rgb(24, 24, 24);
+	--color-fg: rgb(224, 224, 224);
 
-/** {
-  background: #000 !important;
-  color: #0f0 !important;
-  outline: solid #f00 1px !important;
-}*/
+	--color-fg-active: rgb(64, 128, 255);
+	--color-link-active: rgb(64, 128, 255);
+
+	--color-link: rgb(128, 192, 255);
+
+	--color-scrollbar-fg: rgb(224, 224, 224);
+	--color-notification-bg:rgb(64, 64, 64);
+}
 
 body {
 	background-color: var(--color-bg);

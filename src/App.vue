@@ -1,13 +1,13 @@
 <template>
 	<transition name="fade">
-		<Notification v-if="notification">{{notification}}</Notification>
+		<Notification v-if="notificationText">{{notificationText}}</Notification>
 	</transition>
-	<Header @share="share" :isDark=isDark />
+	<Header @share="share" :isDark=isDark :language=language />
 	<div class="container">
 		<Introduction />
-		<Article @share="share" v-for="(article, index) in articles" :key="index" :article="article" :isDark=isDark :language=lang />
+		<Article @share="share" v-for="(article, index) in articles" :key="index" :article="article" :isDark=isDark :language=language />
 	</div>
-	<Footer @image="image" @reset="reset" @theme="theme" @language="language" />
+	<Footer @image="image" @reset="reset" @theme="theme" @language="changeLanguage" />
 	<!-- <LanguageSelect /> -->
 </template>
 <script>
@@ -24,6 +24,27 @@ import browser from '@/utils/browser';
 
 const ARTICLE_TO_RENDER = 10;
 const NOTIFICATION_TIMEOUT = 2000;
+const LANGUAGE_LIST = [
+	'en',
+	'hu',
+	'ceb',
+	'sv',
+	'de',
+	'fr',
+	'nl',
+//	'ru',
+	'it',
+	'es',
+	'pl',
+	'war',
+//	'vi',
+	'ja',
+//	'arz',
+	'zh',
+//	'ar',
+//	'uk',
+	'pt',
+];
 
 export default {
 	name: 'App',
@@ -42,13 +63,12 @@ export default {
 			wiki: null,
 			articles: [],
 
+			notificationText: null,
+
 			isThumbnailNeeded: false,
-
-			notification: null,
-
 			isDark: false,
 
-			lang: "en",
+			language: "en",
 
 			articleRenderCount: 0,
 
@@ -98,7 +118,7 @@ export default {
 
 		reset() {
 			this.wiki.reinitParameters({
-				language: this.lang,
+				language: this.language,
 			});
 
 			// Initialize Article pool and get first articles
@@ -110,16 +130,22 @@ export default {
 				})
 		},
 
-		language() {
-			if (this.lang === "en") {
-				this.lang = "hu"
-			} else if (this.lang === "hu") {
-				this.lang = "en"
+		changeLanguage() {
+			// Get position
+			let oldPosition = LANGUAGE_LIST.indexOf(this.language);
+
+			// Calculate new position
+			let newPosition = oldPosition + 1
+
+			if (newPosition === LANGUAGE_LIST.length) {
+				newPosition = 0;
 			}
+			
+			this.language = LANGUAGE_LIST[newPosition];
 
 			this.reset();
 
-			this.notify("Language set to " + this.lang + "!");
+			this.notify("Language set to " + this.language.toUpperCase() + "!");
 		},
 
 		share(data = null) {
@@ -134,14 +160,14 @@ export default {
 		},
 
 		notify(text = "Hey!") {
-			if (this.notification) {
+			if (this.notificationText) {
 				clearTimeout(this.timeout);
 			}
 
-			this.notification = text;
+			this.notificationText = text;
 
 			this.timeout = setTimeout(() => {
-				this.notification = null;
+				this.notificationText = null;
 			}, NOTIFICATION_TIMEOUT);
 		},
 
@@ -172,9 +198,7 @@ export default {
 	background-color: var(--color-bg);
 
 	padding-top: 48px;
-
 	width: 50%;
-
 	margin: auto;
 
 	text-align: justify;
@@ -205,10 +229,7 @@ export default {
 }
 
 .fade-enter-from,
-.fade-leave-to
-
-/* .fade-leave-active below version 2.1.8 */
-	{
+.fade-leave-to {
 	margin-top: -5rem;
 }
 </style>

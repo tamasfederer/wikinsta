@@ -9,6 +9,23 @@ const LANGUAGE = "en";
 const CATEGORY_LIST = {
 	'en': 'Category',
 	'hu': 'Kategoria',
+	'ceb': 'Kategoriya',
+	'sv': 'Kategori',
+	'de': 'Kategorie',
+	'fr': 'Categorie',
+	'nl': 'Categorie',
+	// 'ru': 'Категория',
+	'it': 'Categoria',
+	'es': 'Categoría',
+	'pl': 'Kategoria',
+	'war': 'Kaarangay',
+	// 'vi': 'Thể_loại',
+	'ja': 'Category',
+	// 'arz': 'تصنيف',
+	'zh': 'Category',
+	// 'ar': 'تصنيف',
+	// 'uk': 'Категорія',
+	'pt': 'Categoria',
 };
 
 export default class Wiki {

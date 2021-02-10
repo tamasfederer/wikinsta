@@ -21,11 +21,11 @@ export default {
 
 	z-index: 200;
 
-	border-radius: 10px;
+	border-radius: 8px;
 	border-width: 0px;
 	background-color: var(--color-fg);
 	color: var(--color-bg);
-	opacity: 0.75;
+	opacity: 0.85;
 
 	min-width: 250px;
 }

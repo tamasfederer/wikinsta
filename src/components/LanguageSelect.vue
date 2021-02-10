@@ -1,4 +1,5 @@
 <template>
+	<!-- This component is under development -->
 	<div class="overlay">
 		<div class="overlay-bg"></div>
 		<button>English</button>
