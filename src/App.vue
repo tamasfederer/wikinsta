@@ -7,7 +7,7 @@
 		<Introduction />
 		<Article @share="share" v-for="(article, index) in articles" :key="index" :article="article" :isDark=isDark :language=language />
 	</div>
-	<Footer @changeTheme="setIsDark" @changeIsThumbnailNeeded="setIsThumbnailNeeded" @resetPage="reset" @changeLanguage="changeLanguage" :isDark=isDark :isThumbnailNeeded=isThumbnailNeeded />
+	<Footer @changeTheme="changeTheme" @changeIsThumbnailNeeded="changeIsThumbnailNeeded" @changeLanguage="changeLanguage" @resetPage="reset" :isDark=isDark :isThumbnailNeeded=isThumbnailNeeded />
 	<!-- <LanguageSelect /> -->
 </template>
 <script>
@@ -67,25 +67,40 @@ export default {
 
 		isThumbnailNeeded() {
 			if (this.isThumbnailNeeded) {
-				this.notify("Only articles with images will be loaded!");
+				this.notify(translation.getTranslation({
+					language: this.language,
+					item: "isThumbnailNeeded_true"
+				}));
 			} else {
-				this.notify("All articles will be loaded!");
+				this.notify(translation.getTranslation({
+					language: this.language,
+					item: "isThumbnailNeeded_false"
+				}));
 			}
 		},
 
 		isDark() {
 			if (this.isDark) {
 				document.documentElement.className = 'theme-dark';
-				this.notify("Dark theme enabled!");
+				this.notify(translation.getTranslation({
+					language: this.language,
+					item: "isDark_true"
+				}));
 			} else {
 				document.documentElement.className = 'theme-light';
-				this.notify("Light theme enabled!");
+				this.notify(translation.getTranslation({
+					language: this.language,
+					item: "isDark_false"
+				}));
 			}
 		},
 
 		language() {
-			this.notify("Language set to " + this.language.toUpperCase() + "!");
-		}
+			this.notify(translation.getTranslation({
+				language: this.language,
+				item: "language"
+			}));
+		},
 	},
 
 	mounted() {
@@ -131,8 +146,6 @@ export default {
 		this.setLanguage(language);
 		this.setIsThumbnailNeeded(isThumbnailNeeded);
 		this.setIsDark(isDark);
-
-
 
 		// // Reset
 		// this.reset();
@@ -231,9 +244,21 @@ export default {
 			}
 		},
 
+		changeIsThumbnailNeeded(isThumbnailNeeded) {
+			this.setIsThumbnailNeeded(isThumbnailNeeded);
 
+			this.reset();
+		},
 
+		changeTheme(isDark) {
+			this.setIsDark(isDark);
+		},
 
+		changeLanguage() {
+			this.setLanguage(translation.getNextLanguage(this.language));
+
+			this.reset();
+		},
 
 
 
@@ -254,21 +279,7 @@ export default {
 				})
 		},
 
-		changeLanguage() {
-			// Get position
-			// let oldPosition = LANGUAGE_LIST.indexOf(this.language);
 
-			// // Calculate new position
-			// let newPosition = oldPosition + 1
-
-			// if (newPosition === LANGUAGE_LIST.length) {
-			// 	newPosition = 0;
-			// }
-
-			// this.language = LANGUAGE_LIST[newPosition];
-
-			// this.reset();
-		},
 
 		share(data = null) {
 			if (browser.isWebshareApiEnabled()) {

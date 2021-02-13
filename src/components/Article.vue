@@ -10,7 +10,7 @@
 				<li class="article-category" v-for="(value, name) in categories" :key="name"><a :href=value target="_blank">{{name}}&nbsp;</a></li>
 			</ul>
 			<IconShare v-if=isMobile class="article-share" @click="share" />
-			<iconCopy  v-else class="article-share" @click="share" />
+			<IconCopy  v-else class="article-share" @click="share" />
 		</div>
 	</div>
 </template>
@@ -135,33 +135,24 @@ export default {
 
 .article-share {
 	width: 32px;
-	height: 32px;
+	max-height: 32px;
 
-	position: absolute;
-	bottom: 0;
+	bottom: 0rem;
 	right: 0.5rem;
 
 	fill: var(--color-fg);
 }
 
 .article-share:hover {
-	height: 36px;
-	width: 36px;
-
-	margin-bottom: -2px;
-	margin-right: -2px;
+	fill: var(--color-fg-hover);
 
 	transition: 0.2s;
 	cursor: pointer;
 }
 
 .article-share:active {
-	height: 34px;
-	width: 34px;
-
-	margin-bottom: -1px;
-	margin-right: -1px;
-
+	fill: var(--color-fg);
+	
 	transition: 0.1s;
 }
 
@@ -174,6 +165,7 @@ export default {
 		min-width: 240px;
 		width: 240px;
 		padding-left: 0.5rem;
+		padding-bottom: 0rem;
 	}
 
 	.article-content {

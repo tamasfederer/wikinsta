@@ -7,6 +7,8 @@
 	--color-bg: rgb(255, 255, 255);
 	--color-fg: rgb(64, 64, 64);
 
+	--color-fg-hover: rgb(128, 128, 128);
+
 	--color-fg-active: rgb(64, 128, 255);
 	--color-link-active: rgb(64, 128, 255);
 
@@ -20,6 +22,8 @@
 	--color-bg: rgb(24, 24, 24);
 	--color-fg: rgb(224, 224, 224);
 
+	--color-fg-hover: rgb(128, 128, 128);
+
 	--color-fg-active: rgb(64, 128, 255);
 	--color-link-active: rgb(64, 128, 255);
 
@@ -28,6 +32,12 @@
 	--color-scrollbar-fg: rgb(224, 224, 224);
 	--color-notification-bg:rgb(64, 64, 64);
 }
+
+/** {
+  background: #000 !important;
+  color: #0f0 !important;
+  outline: solid #f00 1px !important;
+}*/
 
 body {
 	background-color: var(--color-bg);

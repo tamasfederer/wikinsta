@@ -93,24 +93,14 @@ export default {
 }
 
 .icon:hover {
-	height: 36px;
-	width: 36px;
-
-	margin-top: 6px;
-	margin-right: 6px;
-	margin-left: 6px;
+	fill: var(--color-fg-hover);
 
 	transition: 0.2s;
 	cursor: pointer;
 }
 
 .icon:active {
-	height: 34px;
-	width: 34px;
-
-	margin-top: 7px;
-	margin-right: 7px;
-	margin-left: 7px;
+	fill: var(--color-fg);
 
 	transition: 0.1s;
 }
