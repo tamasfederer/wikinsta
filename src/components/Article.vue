@@ -81,7 +81,7 @@ export default {
 			let data = {
 				'title': this.title,
 				'text': this.extract,
-				'url': this.link,
+				'url': this.redirect_link,
 			}
 
 			this.$emit('share', data);

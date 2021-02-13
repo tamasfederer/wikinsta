@@ -69,6 +69,10 @@ var browser = {
 		}
 	},
 
+	getUrl() {
+		return window.location.origin
+	},
+
 	getLanguage() {
 		if (window.navigator.languages) {
 			return (window.navigator.languages[0]);

@@ -177,6 +177,11 @@ export default class Wiki {
 			"/?curid=" +
 			data['pageid'];
 
+		// Save redirect_link
+		article['redirect_link'] = browser.getUrl() + '/' +
+			'?id=' + data['pageid'] +
+			'&language=' + data['language'];
+
 		// If there's no thumbnail then it's NULL
 		if ('thumbnail' in data) {
 			article['thumbnail'] = data['thumbnail']['source'];
