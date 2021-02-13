@@ -1,7 +1,7 @@
 # Wikinsta
 
 Wikinsta is under development!
-Feel free to [contribute](https://github.com/tamasfederer/wikinsta) or [report](https://github.com/tamasfederer/wikinsta/issues) an issue or submit your idea!
+Feel free to [contribute](https://github.com/tamasfederer/wikinsta) or [report](https://github.com/tamasfederer/wikinsta/issues) an issue / submit your idea!
 
 
 **Hello there,**
@@ -13,3 +13,26 @@ Wikinsta has been created to make this easier.
 If you like it, please [support](https://donate.wikimedia.org) the guys at Wikimedia. Also please [support](https://fontawesome.com/support) FontAwesome, as I've got these icons from them.
 
 **Thanks!**
+
+## Project setup
+```
+npm install
+```
+
+### Compiles and hot-reloads for development
+```
+npm run serve
+```
+
+### Compiles and minifies for production
+```
+npm run build
+```
+
+### Lints and fixes files
+```
+npm run lint
+```
+
+### Customize configuration
+See [Configuration Reference](https://cli.vuejs.org/config/). 

@@ -1,15 +1,17 @@
 <template>
 	<div class="footer">
-		<IconImage class="icon" :class="{ active: isImage }" @click="changeImage" />
-		<IconLightbulb class="icon" @click="changeTheme" />
-		<IconLanguage class="icon" @click="changeLanguage" />
-		<IconTrash class="icon" @click="reset" />
+		<IconImage class="icon" :class="{ active: isThumbnailNeeded }" @click="revokeEvent('changeIsThumbnailNeeded')" />
+		<IconLightbulbSolid v-if=isDark class="icon" @click="revokeEvent('changeTheme')" />
+		<IconLightbulb v-else class="icon" @click="revokeEvent('changeTheme')" />
+		<IconLanguage class="icon" @click="revokeEvent('changeLanguage')" />
+		<IconTrash class="icon" @click="revokeEvent('resetPage')" />
 	</div>
 </template>
 <script>
-import browser from '@/utils/browser';
+// import browser from '@/utils/browser';
 
 import IconLightbulb from '@/components/Icon/IconLightbulb';
+import IconLightbulbSolid from '@/components/Icon/IconLightbulbSolid';
 import IconLanguage from '@/components/Icon/IconLanguage';
 import IconImage from '@/components/Icon/IconImage';
 import IconTrash from '@/components/Icon/IconTrash';
@@ -18,52 +20,40 @@ export default {
 	name: 'Footer',
 	components: {
 		IconLightbulb,
+		IconLightbulbSolid,
 		IconLanguage,
 		IconImage,
 		IconTrash,
 	},
-	data() {
-		return {
-			isImage: false,
-			isDark: false,
+	props: {
+		isDark: {
+			type: Boolean,
+			default: false,
+		},
+		isThumbnailNeeded: {
+			type: Boolean,
+			default: false,
 		}
 	},
 	emits: [
-		'language',
-		'image',
-		'theme',
-		'reset',
+		'changeIsThumbnailNeeded',
+		'changeTheme',
+		'changeLanguage',
+		'resetPage',
 	],
-	computed: {
-		lang() {
-			return browser.getLanguage();
-		},
-	},
 	methods: {
-		changeImage() {
-			if (this.isImage) {
-				this.isImage = false;
-			} else {
-				this.isImage = true;
+		revokeEvent(event) {
+			let parameter = null;
+
+			if (event === "changeTheme") {
+				parameter = !this.isDark;
+			}
+			if (event === "changeIsThumbnailNeeded") {
+				parameter = !this.isThumbnailNeeded;
 			}
 
-			this.$emit('image', this.isImage);
+			this.$emit(event, parameter);
 		},
-		changeTheme() {
-			if (this.isDark) {
-				this.isDark = false;
-			} else {
-				this.isDark = true;
-			}
-
-			this.$emit('theme', this.isDark);
-		},
-		changeLanguage() {
-			this.$emit('language');
-		},
-		reset() {
-			this.$emit('reset');
-		}
 	}
 }
 </script>
@@ -128,11 +118,17 @@ export default {
 @media only screen and (orientation: landscape) {
 	.footer {
 		top: 0;
-		right: 0;
+		right: calc((100% - 960px) / 2);
 
 		width: auto;
 
 		background-color: transparent;
+	}
+}
+
+@media only screen and (orientation: landscape) and (max-width: 960px) {
+	.footer {
+		right: 0;
 	}
 }
 

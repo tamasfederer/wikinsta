@@ -1,5 +1,5 @@
 <template>
-	<transition name="fade">
+	<transition name="slide">
 		<Notification v-if="notificationText">{{notificationText}}</Notification>
 	</transition>
 	<Header @share="share" :isDark=isDark :language=language />
@@ -7,7 +7,7 @@
 		<Introduction />
 		<Article @share="share" v-for="(article, index) in articles" :key="index" :article="article" :isDark=isDark :language=language />
 	</div>
-	<Footer @image="image" @reset="reset" @theme="theme" @language="changeLanguage" />
+	<Footer @changeTheme="setIsDark" @changeIsThumbnailNeeded="setIsThumbnailNeeded" @resetPage="reset" @changeLanguage="changeLanguage" :isDark=isDark :isThumbnailNeeded=isThumbnailNeeded />
 	<!-- <LanguageSelect /> -->
 </template>
 <script>
@@ -21,30 +21,14 @@ import Notification from '@/components/Notification.vue';
 
 import Wiki from '@/utils/wiki';
 import browser from '@/utils/browser';
+import translation from '@/utils/translation';
 
 const ARTICLE_TO_RENDER = 10;
 const NOTIFICATION_TIMEOUT = 2000;
-const LANGUAGE_LIST = [
-	'en',
-	'hu',
-	'ceb',
-	'sv',
-	'de',
-	'fr',
-	'nl',
-//	'ru',
-	'it',
-	'es',
-	'pl',
-	'war',
-//	'vi',
-	'ja',
-//	'arz',
-	'zh',
-//	'ar',
-//	'uk',
-	'pt',
-];
+
+const DEFAULT_IS_THUMBNAIL_NEEDED = true;
+const DEFAULT_IS_DARK = false;
+const DEFAULT_LANGUAGE = "en";
 
 export default {
 	name: 'App',
@@ -61,42 +45,27 @@ export default {
 	data() {
 		return {
 			wiki: null,
+
 			articles: [],
-
-			notificationText: null,
-
-			isThumbnailNeeded: false,
-			isDark: false,
-
-			language: "en",
-
 			articleRenderCount: 0,
 
-			timeout: null,
+			notificationText: null,
+			notificationTimeout: null,
+
+			isThumbnailNeeded: DEFAULT_IS_THUMBNAIL_NEEDED,
+			isDark: DEFAULT_IS_DARK,
+			language: DEFAULT_LANGUAGE,
 		}
 	},
 
 	watch: {
 		articleRenderCount() {
 			if (this.articleRenderCount === 0) {
-				// Register Bottom check
 				browser.bottomCheck({ callback: this.render });
 			}
-		}
-	},
+		},
 
-	mounted() {
-		// Register Wiki
-		this.wiki = new Wiki();
-
-		// Reset
-		this.reset();
-	},
-
-	methods: {
-		image(isThumbnailNeeded) {
-			this.isThumbnailNeeded = isThumbnailNeeded;
-
+		isThumbnailNeeded() {
 			if (this.isThumbnailNeeded) {
 				this.notify("Only articles with images will be loaded!");
 			} else {
@@ -104,10 +73,8 @@ export default {
 			}
 		},
 
-		theme(isDark) {
-			this.isDark = isDark;
-
-			if (isDark) {
+		isDark() {
+			if (this.isDark) {
 				document.documentElement.className = 'theme-dark';
 				this.notify("Dark theme enabled!");
 			} else {
@@ -115,6 +82,163 @@ export default {
 				this.notify("Light theme enabled!");
 			}
 		},
+
+		language() {
+			this.notify("Language set to " + this.language.toUpperCase() + "!");
+		}
+	},
+
+	mounted() {
+		// Register Wiki
+		this.wiki = new Wiki();
+
+		// Get language
+		let language = browser.getGetParam({
+			key: 'language'
+		});
+
+		// Get id
+		let id = browser.getGetParam({
+			key: 'id'
+		});
+
+		// Redirect if needed
+		if ((id !== null) && (language !== null)) {
+			let href = this.wiki.getUrl({
+				id: id,
+				language: language,
+			});
+
+			browser.redirect(href);
+		}
+
+		// Get default language
+		if (language === null) {
+			language = translation.getUserLanguage()
+		}
+
+		// Get isThumbnailNeeded
+		let isThumbnailNeeded = browser.getGetParam({
+			key: 'isThumbnailNeeded'
+		});
+
+		// Get isDark
+		let isDark = browser.getGetParam({
+			key: 'isDark'
+		});
+
+		// Set parameters
+		this.setLanguage(language);
+		this.setIsThumbnailNeeded(isThumbnailNeeded);
+		this.setIsDark(isDark);
+
+
+
+		// // Reset
+		// this.reset();
+	},
+
+	methods: {
+		debug(message = "") {
+			console.log(message);
+			// return message;
+		},
+
+		evaluateBoolean(value) {
+			if (typeof(value) === "boolean") {
+				return value;
+			}
+
+			if (typeof(value) === "number") {
+				if (value === 0) {
+					return false;
+				} else {
+					return true;
+				}
+			}
+
+			if (typeof(value) === "string") {
+				if ((value.toUpperCase() === "TRUE") || (value.toUpperCase() === "1")) {
+					return true;
+				} else {
+					return false;
+				}
+			}
+
+			return null;
+		},
+
+		setIsThumbnailNeeded(isThumbnailNeeded) {
+			isThumbnailNeeded = this.evaluateBoolean(isThumbnailNeeded);
+
+			if (isThumbnailNeeded !== null) {
+				this.debug("Set isThumbnailNeeded to " + isThumbnailNeeded);
+
+				if (isThumbnailNeeded != DEFAULT_IS_THUMBNAIL_NEEDED) {
+					browser.setGetParam({
+						key: "isThumbnailNeeded",
+						value: isThumbnailNeeded,
+					});
+				} else {
+					browser.deleteGetParam({
+						key: "isThumbnailNeeded",
+					});
+				}
+
+				this.isThumbnailNeeded = isThumbnailNeeded;
+			}
+		},
+
+		setIsDark(isDark) {
+			isDark = this.evaluateBoolean(isDark);
+
+			if (isDark !== null) {
+				this.debug("Set isDark to " + isDark);
+
+				if (isDark != DEFAULT_IS_DARK) {
+					browser.setGetParam({
+						key: "isDark",
+						value: isDark,
+					});
+				} else {
+					browser.deleteGetParam({
+						key: "isDark",
+					});
+				}
+
+				this.isDark = isDark;
+			}
+		},
+
+		setLanguage(language) {
+			language = translation.evaluateLanguage(language);
+
+			if (language !== null) {
+				this.debug("Set language to " + language);
+
+				if (language != DEFAULT_LANGUAGE) {
+					browser.setGetParam({
+						key: "language",
+						value: language,
+					});
+				} else {
+					browser.deleteGetParam({
+						key: "language",
+					});
+				}
+
+				this.language = language;
+			}
+		},
+
+
+
+
+
+
+
+
+
 
 		reset() {
 			this.wiki.reinitParameters({
@@ -132,20 +256,18 @@ export default {
 
 		changeLanguage() {
 			// Get position
-			let oldPosition = LANGUAGE_LIST.indexOf(this.language);
+			// let oldPosition = LANGUAGE_LIST.indexOf(this.language);
 
-			// Calculate new position
-			let newPosition = oldPosition + 1
+			// // Calculate new position
+			// let newPosition = oldPosition + 1
 
-			if (newPosition === LANGUAGE_LIST.length) {
-				newPosition = 0;
-			}
-			
-			this.language = LANGUAGE_LIST[newPosition];
+			// if (newPosition === LANGUAGE_LIST.length) {
+			// 	newPosition = 0;
+			// }
 
-			this.reset();
+			// this.language = LANGUAGE_LIST[newPosition];
 
-			this.notify("Language set to " + this.language.toUpperCase() + "!");
+			// this.reset();
 		},
 
 		share(data = null) {
@@ -161,12 +283,12 @@ export default {
 
 		notify(text = "Hey!") {
 			if (this.notificationText) {
-				clearTimeout(this.timeout);
+				clearTimeout(this.notificationTimeout);
 			}
 
 			this.notificationText = text;
 
-			this.timeout = setTimeout(() => {
+			this.notificationTimeout = setTimeout(() => {
 				this.notificationText = null;
 			}, NOTIFICATION_TIMEOUT);
 		},
@@ -223,13 +345,13 @@ export default {
 	}
 }
 
-.fade-enter-active,
-.fade-leave-active {
+.slide-enter-active,
+.slide-leave-active {
 	transition: margin-top .25s;
 }
 
-.fade-enter-from,
-.fade-leave-to {
+.slide-enter-from,
+.slide-leave-to {
 	margin-top: -5rem;
 }
 </style>

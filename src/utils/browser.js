@@ -76,6 +76,56 @@ var browser = {
 			return (window.navigator.userLanguage || window.navigator.language);
 		}
 	},
-}
+
+	getGetParam({ key = null }) {
+		const url = new URL(window.location);
+
+		let retval = {};
+
+		if (key === null) {
+			url.searchParams.forEach((v, k) => {
+				retval[k] = url.searchParams.get(k);
+			});
+
+			return retval;
+		} else {
+			return url.searchParams.get(key);
+		}	
+	},
+
+	setGetParam({ key = null, value = null }) {
+		if ((key === null) || (value === null)) {
+			return;
+		}
+
+		const url = new URL(window.location);
+
+		url.searchParams.set(key, value);
+
+		window.history.pushState({}, '', url);
+	},
+
+	deleteGetParam({ key = null }) {
+		const url = new URL(window.location);
+
+		if (key === null) {
+			url.searchParams.forEach((v, k) => {
+				url.searchParams.delete(k);
+			});
+		} else {
+			url.searchParams.delete(key);
+		}
+
+		window.history.pushState({}, '', url);
+	},
+
+	redirect(href = null) {
+		if (href === null) {
+			return;
+		} else {
+			window.location.href = href;
+		}
+	}
+};
 
 export default browser

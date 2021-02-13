@@ -230,4 +230,20 @@ export default class Wiki {
 			language: language,
 		});
 	}
+
+	getUrl({ id = null, language = null } = {}) {
+		if ((id === null) || (language === null)) {
+			return;
+		}
+
+		// Get if mobile
+		let medium = browser.isMobile() ? ".m" : "";
+
+		return ("https://" +
+			language +
+			medium + "." +
+			WIKI_URL +
+			"/?curid=" +
+			id);
+	}
 }
