@@ -1,81 +1,82 @@
 <template>
-	<!-- This component is under development -->
-	<div class="overlay">
-		<div class="overlay-bg"></div>
-		<button>English</button>
-		<button>Hungarian</button>
+	<div class="overlay" @click="emitChangeLanguage(null)">
+		<FlagNl class="flag" @click="emitChangeLanguage('nl')" />
+		<FlagEn class="flag" @click="emitChangeLanguage('en')" />
+		<FlagFr class="flag" @click="emitChangeLanguage('fr')" />
+		<FlagDe class="flag" @click="emitChangeLanguage('de')" />
+		<FlagHu class="flag" @click="emitChangeLanguage('hu')" />
+		<FlagIt class="flag" @click="emitChangeLanguage('it')" />
+		<FlagEs class="flag" @click="emitChangeLanguage('es')" />
+		<FlagSv class="flag" @click="emitChangeLanguage('sv')" />
 	</div>
 </template>
 <script>
+import FlagHu from '@/components/Flag/FlagHu';
+import FlagEn from '@/components/Flag/FlagEn';
+import FlagDe from '@/components/Flag/FlagDe';
+import FlagFr from '@/components/Flag/FlagFr';
+import FlagSv from '@/components/Flag/FlagSv';
+import FlagNl from '@/components/Flag/FlagNl';
+import FlagEs from '@/components/Flag/FlagEs';
+import FlagIt from '@/components/Flag/FlagIt';
+
 export default {
 	name: 'LanguageSelect',
-	data() {
-		return {
-
+	components: {
+		FlagHu,
+		FlagEn,
+		FlagDe,
+		FlagFr,
+		FlagSv,
+		FlagEs,
+		FlagIt,
+		FlagNl,
+	},
+	emits: [
+		'changeLanguage',
+	],
+	methods: {
+		emitChangeLanguage(language) {
+			this.$emit('changeLanguage', language);
 		}
-	}
+	},
 }
 </script>
 <style lang="css" scoped>
 .overlay {
 	position: fixed;
 
-	width: 100%;
-	height: 100%;
-
 	top: 0;
 	left: 0;
+
+	width: 100%;
+	height: 100%;
 
 	z-index: 1000;
 
 	display: flex;
-	flex-direction: column;
+	flex-flow: row wrap;
 	justify-content: center;
-	align-items: center;
+	align-content: center;
 
-	padding-left: 32px;
-	padding-right: 32px;
-	padding-top: 16px;
-	padding-bottom: 16px;
+	background: var(--color-language-select-bg);
 }
 
-.overlay-bg {
-	position: fixed;
-
-	width: 100%;
-	height: 100%;
-
-	z-index: 1001;
-
-	top: 0;
-	left: 0;
-
-	opacity: 0.75;
-
-	background-color: var(--color-fg);
+.flag {
+	height: 48px;
+	border-radius: 24px;
+	padding: 16px;
 }
 
-button {
-	opacity: 1;
+@media (hover: hover) {
+	.flag {
+		filter: grayscale(0.75);
+	}
 
-	width: 128px;
-	height: 50px;
-
-	z-index: 1002;
-
-	margin-bottom: 8px;
-	margin-top: 8px;
-
-	background-color: var(--color-bg);
-	border-color: var(--color-fg);
-	border-width: 2px;
-
-	border-radius: 8px;
-
-	text-transform: uppercase;
-}
-
-button:hover {
-	background-color: var(--color-fg-active);
+	.flag:hover {
+		filter: grayscale(0);
+		transition: 0.2s;
+		cursor: pointer;
+	}
 }
 </style>

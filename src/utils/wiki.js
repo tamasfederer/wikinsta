@@ -1,32 +1,11 @@
 import axios from 'axios'
 import browser from '@/utils/browser'
+import translation from '@/utils/translation'
 
 const WIKI_URL = "wikipedia.org";
 const ARTICLE_CACHE_COUNT = 500;
 const ARTICLE_CACHE_LIMIT = 50;
 const LANGUAGE = "en";
-
-const CATEGORY_LIST = {
-	'en': 'Category',
-	'hu': 'Kategoria',
-	'ceb': 'Kategoriya',
-	'sv': 'Kategori',
-	'de': 'Kategorie',
-	'fr': 'Categorie',
-	'nl': 'Categorie',
-	// 'ru': 'Категория',
-	'it': 'Categoria',
-	'es': 'Categoría',
-	'pl': 'Kategoria',
-	'war': 'Kaarangay',
-	// 'vi': 'Thể_loại',
-	'ja': 'Category',
-	// 'arz': 'تصنيف',
-	'zh': 'Category',
-	// 'ar': 'تصنيف',
-	// 'uk': 'Категорія',
-	'pt': 'Categoria',
-};
 
 export default class Wiki {
 	constructor({ articleCacheCount = ARTICLE_CACHE_COUNT, articleCacheLimit = ARTICLE_CACHE_LIMIT, language = LANGUAGE } = {}) {
@@ -165,6 +144,7 @@ export default class Wiki {
 		article['pageid'] = data['pageid'];
 		article['title'] = data['title'];
 		article['extract'] = data['extract'];
+		article['language'] = data['language'];
 
 		// Get if mobile
 		let medium = browser.isMobile() ? ".m" : "";
@@ -192,13 +172,10 @@ export default class Wiki {
 		article['categories'] = [];
 
 		// Get category length
-		let categoryLength = 0;
-
-		for (var k in CATEGORY_LIST) {
-			if (k === data['language']) {
-				categoryLength = CATEGORY_LIST[k].length + 1;
-			}
-		}
+		let categoryLength = translation.getTranslation({
+			language: data['language'],
+			item: "category",
+		}).length + 1;
 
 		if ('categories' in data) {
 			for (var i = 0; i < data['categories'].length; i++) {

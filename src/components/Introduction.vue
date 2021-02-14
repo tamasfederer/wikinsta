@@ -1,17 +1,62 @@
 <template>
 	<div class="introduction">
-		<p style="text-align:center;"><i>The strange marriage of Wikipedia and Instagram</i></p>
-		<p><b>Hello there,</b></p>
-		<p>Did you know that in June 2018 the US Android users spent more than <a href="https://www.vox.com/2018/6/25/17501224/instagram-facebook-snapchat-time-spent-growth-data" target="_blank">50 minutes</a> per day on Instagram? Can you imagine what could be achieved during that time? One can learn a language or a new skill, or a bunch of information can be consumed and the general knowledge of the individual can be increased. This is extremely important, especially these days when misinformation and false news can be found everywhere!</p>
-		<p>Wikinsta has been created to make this easier.</p>
-		<p>If you like it, please <a href="https://donate.wikimedia.org" target="_blank">support</a> the guys at Wikimedia. Also please <a href="https://fontawesome.com/support" target="_blank">support</a> FontAwesome, as I've got these fancy icons from them.</p>
-		<p><b>Thanks!</b></p>
-		<div class="message">Wikinsta is under development!<br/>Feel free to <a href="https://github.com/tamasfederer/wikinsta" target="_blank">contribute</a> or <a href="https://github.com/tamasfederer/wikinsta/issues" target="_blank">report</a> an issue / submit your idea!</div>
+		<p style="text-align:center;"><i>{{motto}}</i></p>
+		<p><b>{{introduction[0]}}</b></p>
+		<p>{{introduction[1]}} <a href="https://www.vox.com/2018/6/25/17501224/instagram-facebook-snapchat-time-spent-growth-data" target="_blank">{{introduction[2]}}</a> {{introduction[3]}} {{introduction[4]}} {{introduction[5]}} {{introduction[6]}}</p>
+		<p>{{introduction[7]}}</p>
+		<p>{{introduction[8]}} <a href="https://donate.wikimedia.org" target="_blank">{{introduction[9]}}</a> {{introduction[10]}} {{introduction[11]}} <a href="https://fontawesome.com/support" target="_blank">{{introduction[12]}}</a> {{introduction[13]}}</p>
+		<p><b>{{introduction[14]}}</b></p>
+		<div class="message"><p v-if=request style="color: red;">{{request}}</p>{{message[0]}}<br />{{message[1]}} <a href="https://github.com/tamasfederer/wikinsta" target="_blank">{{message[2]}}</a> {{message[3]}} <a href="https://github.com/tamasfederer/wikinsta/issues" target="_blank">{{message[4]}}</a> {{message[5]}}</div>
 	</div>
 </template>
 <script>
+import translation from '@/utils/translation';
+
 export default {
 	name: 'Introduction',
+	props: {
+		language: String,
+	},
+	data() {
+		return {
+			motto: null,
+			introduction: null,
+			message: null,
+			request: null,
+		}
+	},
+	watch: {
+		language() {
+			this.getTranslation();
+		},
+	},
+	created() {
+		this.getTranslation();
+	},
+	methods: {
+		getTranslation() {
+			// Get translation
+			this.introduction = translation.getTranslation({
+				language: this.language,
+				item: "introduction",
+			});
+
+			this.motto = translation.getTranslation({
+				language: this.language,
+				item: "motto",
+			});
+
+			this.message = translation.getTranslation({
+				language: this.language,
+				item: "message",
+			});
+
+			this.request = translation.getTranslation({
+				language: this.language,
+				item: "request",
+			});
+		},
+	},
 }
 </script>
 <style lang="css" scoped>
@@ -41,5 +86,5 @@ export default {
 	border-color: var(--color-fg);
 	color: var(--color-fg);
 	background-color: var(--color-notification-bg);
-} 
+}
 </style>

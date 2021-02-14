@@ -5,34 +5,37 @@
 
 .theme-light {
 	--color-bg: rgb(255, 255, 255);
+
 	--color-fg: rgb(64, 64, 64);
-
 	--color-fg-hover: rgb(128, 128, 128);
-
 	--color-fg-active: rgb(64, 128, 255);
+	
+	--color-link: rgb(0, 64, 224);
 	--color-link-active: rgb(64, 128, 255);
 
-	--color-link: rgb(0, 64, 224);
+	--color-notification-bg: rgb(224, 224, 224);
+	--color-language-select-bg:rgba(64, 64, 64, 0.75);
 
 	--color-scrollbar-fg: rgb(64, 64, 64);
-	--color-notification-bg: rgb(224, 224, 224);
 }
 
 .theme-dark {
 	--color-bg: rgb(24, 24, 24);
+
 	--color-fg: rgb(224, 224, 224);
-
 	--color-fg-hover: rgb(128, 128, 128);
-
 	--color-fg-active: rgb(64, 128, 255);
-	--color-link-active: rgb(64, 128, 255);
 
 	--color-link: rgb(128, 192, 255);
+	--color-link-active: rgb(64, 128, 255);
+
+	--color-notification-bg:rgb(64, 64, 64);
+	--color-language-select-bg:rgba(224, 224, 224, 0.75);
 
 	--color-scrollbar-fg: rgb(224, 224, 224);
-	--color-notification-bg:rgb(64, 64, 64);
 }
 
+/* DEBUG */
 /** {
   background: #000 !important;
   color: #0f0 !important;
@@ -45,7 +48,6 @@ body {
 	padding: 0;
 	width: 100%;
 	height: 100%;
-	overflow-x: hidden;
 }
 
 body::-webkit-scrollbar {

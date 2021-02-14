@@ -1,26 +1,40 @@
-const TRANSLATION_TABLE = {
-	'en': {
-		'isThumbnailNeeded_true': "Only articles with images will be loaded!",
-		'isThumbnailNeeded_false': "All articles will be loaded!",
-		'isDark_true': "Dark theme enabled!",
-		'isDark_false': "Light theme enabled!",
-		'language': "Language set to English!",
-		'error': "An error occurred!",
-	},
-	'hu': {
-		'isThumbnailNeeded_true': "Csak olyan cikkek lesznek betöltve, melyekhez van kép!",
-		'isThumbnailNeeded_false': "Minden cikk be lesz tölte!",
-		'isDark_true': "Sötét téma engedélyezve!",
-		'isDark_false': "Világos téma engedélyezve!",
-		'language': "Nyelv magyarra állítva!",
-		'error': "Hiba!",
-	},
-};
+import en from './translation/translation-en.json';
+import hu from './translation/translation-hu.json';
+import de from './translation/translation-de.json';
+import fr from './translation/translation-fr.json';
+import sv from './translation/translation-sv.json';
+import it from './translation/translation-it.json';
+import nl from './translation/translation-nl.json';
+import es from './translation/translation-es.json';
+
+
+// 	'ceb': 'Kategoriya',
+// 	// 'ru': 'Категория',
+// 	'pl': 'Kategoria',
+// 	'war': 'Kaarangay',
+// 	// 'vi': 'Thể_loại',
+// 	'ja': 'Category',
+// 	// 'arz': 'تصنيف',
+// 	'zh': 'Category',
+// 	// 'ar': 'تصنيف',
+// 	// 'uk': 'Категорія',
+// 	'pt': 'Categoria',
+
+const LANGUAGE_LIST = [
+	'en',
+	'hu',
+	'de',
+	'fr',
+	'sv',
+	'it',
+	'nl',
+	'es'
+];
 
 var translation = {
 	evaluateLanguage(language = null) {
 		if (language !== null) {
-			if (language in TRANSLATION_TABLE) {
+			if (LANGUAGE_LIST.indexOf(language) !== -1) {
 				return language;
 			} else {
 				return null;
@@ -31,11 +45,13 @@ var translation = {
 	},
 
 	getUserLanguage() {
-		return this.evaluateLanguage(
-			navigator.language.substr(
-				0, navigator.language.indexOf('-')
-			)
-		);
+		let language = navigator.language;
+
+		if (language.indexOf('-') !== -1) {
+			language = language.substr(0, language.indexOf('-'));
+		}
+
+		return this.evaluateLanguage(language);
 	},
 
 	getNextLanguage(language = null) {
@@ -43,41 +59,49 @@ var translation = {
 			return null;
 		}
 
-		// Create language array
-		let language_list = [];
-
-		for (var key in TRANSLATION_TABLE) {
-			language_list.push(key);
-		}
-
 		// Get new position
-		let position = language_list.indexOf(language) + 1;
+		let position = LANGUAGE_LIST.indexOf(language) + 1;
 
-		if (position === language_list.length) {
+		if (position === LANGUAGE_LIST.length) {
 			position = 0;
 		}
 
-		return language_list[position];
+		return LANGUAGE_LIST[position];
 	},
 
 	getTranslation({ language = null, item = null }) {
+		let translation_table = {
+			'en': en,
+			'hu': hu,
+			'de': de,
+			'fr': fr,
+			'sv': sv,
+			'it': it,
+			'nl': nl,
+			'es': es,
+		}
+
 		if (language === null) {
 			return ":-(";
 		}
 
-		if (!(language in TRANSLATION_TABLE)) {
+		if (!(language in translation_table)) {
 			return ":-(";
 		}
 
 		if (item === null) {
-			return TRANSLATION_TABLE[language]['error'];
+			return translation_table[language]['error'];
 		}
 
-		if (!(item in TRANSLATION_TABLE[language])) {
-			return TRANSLATION_TABLE[language]['error'];
+		if (!(item in translation_table[language])) {
+			if (item in translation_table['en']) {
+				return translation_table['en'][item];
+			} else {
+				return translation_table[language]['error'];
+			}
 		}
 
-		return TRANSLATION_TABLE[language][item];
+		return translation_table[language][item];
 	}
 };
 

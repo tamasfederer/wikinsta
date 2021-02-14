@@ -2,19 +2,19 @@
 	<transition name="slide">
 		<Notification v-if="notificationText">{{notificationText}}</Notification>
 	</transition>
-	<Header @share="share" :isDark=isDark :language=language />
+	<Header :isDark=isDark :language=language />
 	<div class="container">
-		<Introduction />
+		<Introduction :language=language />
 		<Article @share="share" v-for="(article, index) in articles" :key="index" :article="article" :isDark=isDark :language=language />
 	</div>
-	<Footer @changeTheme="changeTheme" @changeIsThumbnailNeeded="changeIsThumbnailNeeded" @changeLanguage="changeLanguage" @resetPage="reset" :isDark=isDark :isThumbnailNeeded=isThumbnailNeeded />
-	<!-- <LanguageSelect /> -->
+	<Footer @changeTheme="changeTheme" @changeIsThumbnailNeeded="changeIsThumbnailNeeded" @changeLanguage="showLanguageSelect = !showLanguageSelect" @resetPage="resetPage" @share="share" :isDark=isDark :isThumbnailNeeded=isThumbnailNeeded />
+	<LanguageSelect v-if="showLanguageSelect" @changeLanguage="changeLanguage" />
 </template>
 <script>
 import Header from '@/components/Header.vue';
 import Footer from '@/components/Footer.vue';
 import Introduction from '@/components/Introduction.vue';
-// import LanguageSelect from '@/components/LanguageSelect.vue';
+import LanguageSelect from '@/components/LanguageSelect.vue';
 
 import Article from '@/components/Article.vue';
 import Notification from '@/components/Notification.vue';
@@ -39,7 +39,7 @@ export default {
 		Introduction,
 		Article,
 		Notification,
-		// LanguageSelect,
+		LanguageSelect,
 	},
 
 	data() {
@@ -55,6 +55,8 @@ export default {
 			isThumbnailNeeded: DEFAULT_IS_THUMBNAIL_NEEDED,
 			isDark: DEFAULT_IS_DARK,
 			language: DEFAULT_LANGUAGE,
+
+			showLanguageSelect: false,
 		}
 	},
 
@@ -67,39 +69,24 @@ export default {
 
 		isThumbnailNeeded() {
 			if (this.isThumbnailNeeded) {
-				this.notify(translation.getTranslation({
-					language: this.language,
-					item: "isThumbnailNeeded_true"
-				}));
+				this.notify(this.getNotificationText("isThumbnailNeeded_true"));
 			} else {
-				this.notify(translation.getTranslation({
-					language: this.language,
-					item: "isThumbnailNeeded_false"
-				}));
+				this.notify(this.getNotificationText("isThumbnailNeeded_false"));
 			}
 		},
 
 		isDark() {
 			if (this.isDark) {
 				document.documentElement.className = 'theme-dark';
-				this.notify(translation.getTranslation({
-					language: this.language,
-					item: "isDark_true"
-				}));
+				this.notify(this.getNotificationText("isDark_true"));
 			} else {
 				document.documentElement.className = 'theme-light';
-				this.notify(translation.getTranslation({
-					language: this.language,
-					item: "isDark_false"
-				}));
+				this.notify(this.getNotificationText("isDark_false"));
 			}
 		},
 
 		language() {
-			this.notify(translation.getTranslation({
-				language: this.language,
-				item: "language"
-			}));
+			this.notify(this.getNotificationText("language"));
 		},
 	},
 
@@ -147,15 +134,12 @@ export default {
 		this.setIsThumbnailNeeded(isThumbnailNeeded);
 		this.setIsDark(isDark);
 
-		// // Reset
-		// this.reset();
+		// Reset
+		this.resetPage();
 	},
 
 	methods: {
-		debug(message = "") {
-			console.log(message);
-			// return message;
-		},
+		// Helpers
 
 		evaluateBoolean(value) {
 			if (typeof(value) === "boolean") {
@@ -181,12 +165,31 @@ export default {
 			return null;
 		},
 
+		getNotificationText(item) {
+			return translation.getTranslation({
+				language: this.language,
+				item: item,
+			});
+		},
+
+		notify(notificationText = "Hey!") {
+			if (this.notificationText) {
+				clearTimeout(this.notificationTimeout);
+			}
+
+			this.notificationText = notificationText;
+
+			this.notificationTimeout = setTimeout(() => {
+				this.notificationText = null;
+			}, NOTIFICATION_TIMEOUT);
+		},
+
+		// Parameter setters
+
 		setIsThumbnailNeeded(isThumbnailNeeded) {
 			isThumbnailNeeded = this.evaluateBoolean(isThumbnailNeeded);
 
 			if (isThumbnailNeeded !== null) {
-				this.debug("Set isThumbnailNeeded to " + isThumbnailNeeded);
-
 				if (isThumbnailNeeded != DEFAULT_IS_THUMBNAIL_NEEDED) {
 					browser.setGetParam({
 						key: "isThumbnailNeeded",
@@ -206,8 +209,6 @@ export default {
 			isDark = this.evaluateBoolean(isDark);
 
 			if (isDark !== null) {
-				this.debug("Set isDark to " + isDark);
-
 				if (isDark != DEFAULT_IS_DARK) {
 					browser.setGetParam({
 						key: "isDark",
@@ -227,8 +228,6 @@ export default {
 			language = translation.evaluateLanguage(language);
 
 			if (language !== null) {
-				this.debug("Set language to " + language);
-
 				if (language != DEFAULT_LANGUAGE) {
 					browser.setGetParam({
 						key: "language",
@@ -244,28 +243,29 @@ export default {
 			}
 		},
 
+		// Event handlers
+
 		changeIsThumbnailNeeded(isThumbnailNeeded) {
 			this.setIsThumbnailNeeded(isThumbnailNeeded);
 
-			this.reset();
+			this.resetPage();
 		},
 
 		changeTheme(isDark) {
 			this.setIsDark(isDark);
 		},
 
-		changeLanguage() {
-			this.setLanguage(translation.getNextLanguage(this.language));
+		changeLanguage(language) {
+			if ((language != this.language) && (language != null)) {
+				this.setLanguage(language);
 
-			this.reset();
+				this.resetPage();
+			}
+
+			this.showLanguageSelect = false;
 		},
 
-
-
-
-
-
-		reset() {
+		resetPage() {
 			this.wiki.reinitParameters({
 				language: this.language,
 			});
@@ -279,30 +279,18 @@ export default {
 				})
 		},
 
-
-
 		share(data = null) {
 			if (browser.isWebshareApiEnabled()) {
 				browser.shareByWebshareApi(data).then(() => {
-					this.notify(data['title'] + " shared!");
+					this.notify(this.getNotificationText("shared"));
 				})
 			} else {
 				browser.shareByClipboard(data);
-				this.notify(data['title'] + " URL copied to the clipboard!");
+				this.notify(this.getNotificationText("copied"));
 			}
 		},
 
-		notify(text = "Hey!") {
-			if (this.notificationText) {
-				clearTimeout(this.notificationTimeout);
-			}
-
-			this.notificationText = text;
-
-			this.notificationTimeout = setTimeout(() => {
-				this.notificationText = null;
-			}, NOTIFICATION_TIMEOUT);
-		},
+		// Render function
 
 		render() {
 			if (this.articleRenderCount === 0) {
@@ -315,7 +303,9 @@ export default {
 					this.wiki.getArticleNext({ isThumbnailNeeded: this.isThumbnailNeeded })
 						.then(result => {
 							if (result !== null) {
-								this.articles.push(result)
+								if (result['language'] === this.language) {
+									this.articles.push(result)
+								}
 							}
 
 							this.articleRenderCount -= 1;

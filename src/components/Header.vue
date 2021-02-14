@@ -1,7 +1,7 @@
 <template>
 	<div class="header">
-		<img v-if="isDark" class="logo" alt="WikInsta" src="@/assets/logo-dark.png" @click="share">
-		<img v-else class="logo" alt="WikInsta" src="@/assets/logo-light.png" @click="share">
+		<img v-if="isDark" class="logo" alt="WikInsta" src="@/assets/logo-dark.png">
+		<img v-else class="logo" alt="WikInsta" src="@/assets/logo-light.png">
 		<div class="language">{{language}}</div>
 	</div>
 </template>
@@ -15,23 +15,9 @@ export default {
 		},
 		language: {
 			type: String,
+			default: "en",
 		}
 	},
-	emits: [
-		'share'
-	],
-	methods: {
-		// Share content
-		share() {
-			let data = {
-				'title': 'WikInsta',
-				'text': 'Strange marriage of the Wikipedia and Instagram',
-				'url': window.location.origin,
-			}
-
-			this.$emit('share', data);
-		},
-	}
 }
 </script>
 <style lang="css" scoped>
@@ -46,6 +32,10 @@ export default {
 
 	background-color: var(--color-bg);
 
+	border-bottom: solid;
+	border-bottom-width: 1px;
+	border-color: var(--color-fg);
+
 	z-index: 100;
 }
 
@@ -56,25 +46,6 @@ export default {
 	height: 36px;
 
 	margin-top: 6px;
-
-	transition: 0.2s;
-}
-
-.logo:hover {
-	height: 40px;
-
-	margin-top: 4px;
-
-	transition: 0.2s;
-	cursor: pointer;
-}
-
-.logo:active {
-	height: 38px;
-
-	margin-top: 5px;
-
-	transition: 0.1s;
 }
 
 .language {
@@ -90,8 +61,11 @@ export default {
 	top: 32px;
 	padding: 4px 8px;
 
+/*	border: solid;
+	border-width: 1px;
+	border-color: var(--color-bg);*/
 	border-radius: 8px;
-	text-transform:uppercase;
+	text-transform: uppercase;
 
 	left: calc(50% + 75px);
 }

@@ -1,6 +1,6 @@
 <template>
 	<div class="article">
-		<img class="article-figure" :src=thumbnail :alt=title>
+		<img class="article-figure" :src=thumbnail :alt=alt>
 		<div class="article-content">
 			<p class="article-text">
 				<a :href=link target="_blank"><b>{{title}}</b></a>
@@ -10,7 +10,7 @@
 				<li class="article-category" v-for="(value, name) in categories" :key="name"><a :href=value target="_blank">{{name}}&nbsp;</a></li>
 			</ul>
 			<IconShare v-if=isMobile class="article-share" @click="share" />
-			<IconCopy  v-else class="article-share" @click="share" />
+			<IconCopy v-else class="article-share" @click="share" />
 		</div>
 	</div>
 </template>
@@ -32,7 +32,10 @@ export default {
 			type: Boolean,
 			default: false,
 		},
-		language: String,
+		language: {
+			type: String,
+			default: "en",
+		}
 	},
 	computed: {
 		isMobile() {
@@ -40,6 +43,13 @@ export default {
 				return true;
 			} else {
 				return false;
+			}
+		},
+		alt() {
+			if (this.article.thumbnail === null) {
+				return "Wikinsta";
+			} else {
+				return this.article['title'];
 			}
 		},
 		title() {
@@ -51,8 +61,11 @@ export default {
 		link() {
 			return this.article['link'];
 		},
+		redirect_link() {
+			return this.article['redirect_link'];
+		},
 		categories() {
-			const cat = {};
+			let cat = {};
 
 			for (var i = 0; i < this.article['categories'].length; i++) {
 				cat[this.article['categories'][i]['hashtag']] = this.article['categories'][i]['link'];
@@ -143,17 +156,17 @@ export default {
 	fill: var(--color-fg);
 }
 
-.article-share:hover {
-	fill: var(--color-fg-hover);
+@media (hover: hover) {
+	.article-share:hover {
+		fill: var(--color-fg-hover);
+		transition: 0.2s;
+		cursor: pointer;
+	}
 
-	transition: 0.2s;
-	cursor: pointer;
-}
-
-.article-share:active {
-	fill: var(--color-fg);
-	
-	transition: 0.1s;
+	.article-share:active {
+		fill: var(--color-fg);
+		transition: 0.1s;
+	}
 }
 
 @media only screen and (orientation: landscape) {
@@ -170,6 +183,10 @@ export default {
 
 	.article-content {
 		padding-right: 0.5rem;
+	}
+
+	.article-share {
+		position: absolute;
 	}
 }
 </style>
